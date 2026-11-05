@@ -19,7 +19,18 @@ function make1(): NodeScript {
     return new Run();
 }
 
-function set1(_s: NodeScript, _name: string, _v: Value): bool {
+function set1(s: NodeScript, name: string, v: Value): bool {
+    const t = s as Run;
+    if (name == "printEvery") {
+        if (!v.isNumber()) return false;
+        t.printEvery = v.asI32();
+        return true;
+    }
+    if (name == "lastRestartFrames") {
+        if (!v.isNumber()) return false;
+        t.lastRestartFrames = v.asI32();
+        return true;
+    }
     return false;
 }
 
