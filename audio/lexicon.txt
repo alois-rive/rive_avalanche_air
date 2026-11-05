@@ -1,0 +1,119 @@
+# The announcer's lexicon (docs/AUDIO.md, section 6): each word as ARPAbet
+# phonemes, a stress digit on each vowel (1 primary, 2 secondary, 0 none),
+# an optional duration in ms after a colon (AY1:260). tools/make_voice.py
+# compiles it, with the phoneme table it holds, into
+# world/scripts/audio/voice_data.as.
+#
+#   word NAME  phonemes...
+#   line ID [!] NAME NAME ...    a fixed line: its caption id (RIVE.md,
+#                                section 5), ! for shouted (pitch +40 %,
+#                                louder, longer vowels)
+
+# ---- the countdown ------------------------------------------------------------
+word THREE      TH R IY1
+word TWO        T UW1
+word ONE        W AH1 N
+word GO         G OW1
+word READY      R EH1 D IY0
+
+# ---- praise -------------------------------------------------------------------
+word NICE       N AY1 S
+word SICK       S IH1 K
+word RADICAL    R AE1 D IH0 K AX L
+word INSANE     IH0 N S EY1 N
+word UNREAL     AH2 N R IY1 L
+word PERFECT    P ER1 F IH0 K T
+word SKETCHY    S K EH1 CH IY0:180
+word SWEET      S W IY1 T
+word NASTY      N AE1 S T IY0
+word GNARLY     N AA1 R L IY0
+word YEAH       Y AE1 AX0
+word AWESOME    AO1 S AX0 M
+word BIG        B IH1 G
+word AIR        EH1 R
+word COMBO      K AA1 M B OW0
+
+# ---- crashes ------------------------------------------------------------------
+word OUCH       AW1 CH
+word WIPEOUT    W AY1 P AW2 T
+word BAIL       B EY1 L
+
+# ---- the course ---------------------------------------------------------------
+word HIGH       HH AY1
+word LOW        L OW1
+word LINE       L AY1 N
+word FINAL      F AY1 N AX0 L
+word JUMP       JH AH1 M P
+
+# ---- the grade ----------------------------------------------------------------
+word S          EH1 S
+word A          EY1
+word B          B IY1
+word C          S IY1
+word RANK       R AE1 NG K
+word NEW        N UW1
+word RECORD     R EH1 K ER0 D
+
+# ---- trick names (TRICKS.md, section 2) -----------------------------------------
+word SWITCH     S W IH1 CH
+word FRONTSIDE  F R AH1 N T S AY2 D
+word BACKSIDE   B AE1 K S AY2 D
+word FRONT      F R AH1 N T
+word BACK       B AE1 K
+word FLIP       F L IH1 P
+word BACKFLIP   B AE1 K F L IH2 P
+word DOUBLE     D AH1 B AX0 L
+word N180       W AH1 N EY1 T IY0
+word N360       TH R IY1 S IH1 K S T IY0
+word N540       F AY1 V F AO1 R T IY0
+word N720       S EH1 V AX0 N T W EH1 N T IY0
+word N900       N AY1 N HH AH1 N D R AX0 D
+word N1080      T EH1 N EY1 T IY0
+word N1260      T W EH1 L V S IH1 K S T IY0
+word N1440      F AO1 R T IY1 N F AO1 R T IY0
+word INDY       IH1 N D IY0
+word MELON      M EH1 L AX0 N
+word METHOD     M EH1 TH AX0 D
+word MUTE       M Y UW1 T
+word TO         T AX0
+word FIFTYFIFTY F IH1 F T IY0 F IH1 F T IY0
+word BOARDSLIDE B AO1 R D S L AY2 D
+word LOG        L AO1 G
+word SLIDE      S L AY1 D
+word KINKED     K IH1 NG K T
+word RAINBOW    R EY1 N B OW2
+word AVALANCHE  AE1 V AX0 L AE2 N CH
+word OH         OW1
+
+# ---- the fixed lines: the captions' ids ------------------------------------------
+line 0  ! THREE
+line 1  ! TWO
+line 2  ! ONE
+line 3  ! GO
+line 4    READY
+line 5  ! NICE
+line 6  ! SICK
+line 7  ! RADICAL
+line 8  ! INSANE
+line 9  ! UNREAL
+line 10 ! PERFECT
+line 11   SKETCHY
+line 12 ! OUCH
+line 13 ! WIPEOUT
+line 14 ! BAIL
+line 15 ! HIGH LINE
+line 16 ! LOW LINE
+line 17 ! FINAL JUMP
+line 18 ! AWESOME
+line 19 ! S RANK
+line 20 ! A RANK
+line 21 ! B RANK
+line 22 ! C RANK
+line 23 ! NEW RECORD
+line 24 ! COMBO
+line 25 ! YEAH
+line 26 ! SWEET
+line 27 ! NASTY
+line 28 ! GNARLY
+line 29 ! BIG AIR
+line 30 ! AVALANCHE AIR
