@@ -28,3 +28,6 @@ exclude:
   - tools
   - assets
   - "**/__pycache__"
+pages:
+  teamId: 43576
+  name: "avalanche-air"
