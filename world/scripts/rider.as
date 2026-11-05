@@ -88,6 +88,10 @@ const COYOTE: f32 = 0.15;
 // The crouch's depth while charging: from this at a tap to 1 at full charge,
 // so the pose shows how much is loaded.
 const CROUCH_TAP_DEPTH: f32 = 0.55;
+// A release in the air this soon before the landing pops again as the board
+// lands ("jump buffering"): a player who taps Space for the next ollie a
+// moment before touching down gets it.
+const AIR_BUFFER: f32 = 0.2;
 const POP_COOLDOWN: f32 = 0.25;
 const PERFECT_WINDOW: f32 = 0.12;
 const PERFECT_BONUS: f32 = 1.0;
@@ -221,6 +225,11 @@ export class Rider {
     coyoteNz: f32 = 0;
     // EV_OLLIE_READY sent for this crouch
     readySent: bool = false;
+    // a release in the air waiting for the landing (s left), its pop, and the
+    // pop the next ground tick gives once landed
+    airBuffer: f32 = 0;
+    airBufferPop: f32 = 0;
+    landPop: f32 = 0;
     pendingPop: f32 = 0;
     pendingAge: f32 = 0;
     private gapTicks: i32 = 0;
@@ -547,10 +556,13 @@ export class Rider {
         this.vz = vz;
         // the crouch released: an ollie (on a lip, held to the lip's edge)
         const released = wasCrouching && !this.crouching && control;
+        // (a tap buffered in the air before this landing pops as a release)
+        const landPop = control ? this.landPop : <f32>0;
+        this.landPop = 0;
         // (a release on the tick the board leaves a crest pops as it leaves)
         let crestPop: f32 = 0;
-        if (released && this.cooldown <= 0) {
-            const pop = popSpeed(this.charge);
+        if ((released || landPop > 0) && this.cooldown <= 0) {
+            const pop = released ? popSpeed(this.charge) : landPop;
             this.charge = 0;
             if (this.onLip || h.lip) {
                 this.pendingPop = pop;
@@ -728,6 +740,8 @@ export class Rider {
             (this.onLip ? "1" : "0") + " perfect " + (perfect ? "1" : "0") + " feature " + this.feature.toString());
         this.mode = MODE_AIR;
         this.coyote = 0;
+        this.airBuffer = 0;
+        this.landPop = 0;
         this.airTime = 0;
         this.spinRate = 0;
         this.flipRate = 0;
@@ -789,12 +803,20 @@ export class Rider {
                 this.solveFlight();
             }
         }
-        if (this.coyote > 0 && this.crouching) {
+        // a release in the air past the coyote window: kept for the landing
+        if (this.airBuffer > 0) this.airBuffer -= dt;
+        if (this.coyote <= 0 && wasCrouching && !this.crouching && control) {
+            this.airBuffer = AIR_BUFFER;
+            this.airBufferPop = popSpeed(this.charge);
+        }
+        // the crouch charges in the air too, so a hold through the landing
+        // releases a charged ollie
+        if (this.crouching) {
             this.charge = this.charge + dt < CHARGE_MAX ? this.charge + dt : CHARGE_MAX;
         } else {
-            this.crouch = approach(this.crouch, 0, CROUCH_IN * dt);
-            if (!this.crouching) this.charge = 0;
+            this.charge = 0;
         }
+        if (this.coyote <= 0 || !this.crouching) this.crouch = approach(this.crouch, 0, CROUCH_IN * dt);
         // the grab
         let want = GRAB_NONE;
         if (control) {
@@ -1081,6 +1103,9 @@ export class Rider {
         this.dnz = nz;
         this.q.setOnGround(this.heading + (this.switchStance ? PI_F : 0), nx, ny, nz);
         this.tricks.land(quality);
+        // a tap just before touching down: the ollie the next ground tick
+        if (this.airBuffer > 0) this.landPop = this.airBufferPop;
+        this.airBuffer = 0;
     }
 
     // ---- on a rail --------------------------------------------------------------
@@ -1383,7 +1408,7 @@ export class Rider {
         r.tumbling = this.mode == MODE_TUMBLE;
         r.tuck = this.tuck;
         r.crouch = this.crouch;
-        r.ollieCharge = this.crouching && (this.mode == MODE_GROUND || this.coyote > 0) ? clampf(this.charge / CHARGE_MAX, 0, 1) : 0;
+        r.ollieCharge = this.crouching && (this.mode == MODE_GROUND || this.mode == MODE_AIR) ? clampf(this.charge / CHARGE_MAX, 0, 1) : 0;
         r.carve = this.mode == MODE_GROUND ? this.carve : 0;
         r.skid = this.mode == MODE_GROUND ? this.skid : 0;
         // -1 heel .. +1 toe: a right turn is on the toes for a regular rider riding forward
