@@ -110,7 +110,7 @@ def run_rscn():
     w('    <property name="rotation_degrees">Vector3(-12, 0, 0)</property>')
     w('    <property name="fov">66</property>')
     w('    <property name="near">0.1</property>')
-    w('    <property name="far">500</property>')
+    w('    <property name="far">200</property>')
     w('    <property name="current">true</property>')
     w("  </node>")
     w('  <node name="Sound" type="Node" parent=".">')

@@ -18,7 +18,7 @@ const FLARES: i32 = 5;
 // each disc's place on the sun-to-centre line (1 the sun, 0 the centre, -1
 // the mirror) and size (m at FLARE_DIST from the lens)
 const FLARE_T: StaticArray<f32> = [1.0, 0.55, 0.2, -0.35, -0.8];
-const FLARE_SIZE: StaticArray<f32> = [0.55, 0.16, 0.09, 0.2, 0.32];
+const FLARE_SIZE: StaticArray<f32> = [0.26, 0.09, 0.05, 0.12, 0.18];
 const FLARE_DIST: f32 = 2.0;
 const TAN_HALF_V: f32 = 0.6494;     // tan(66 deg / 2): the lens's vertical half-angle
 const ASPECT: f32 = 4.0 / 3.0;

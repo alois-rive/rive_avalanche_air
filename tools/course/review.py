@@ -85,7 +85,7 @@ def frame_rig(cam_xform, anim):
     <property name="transform">%s</property>
     <property name="fov">66</property>
     <property name="near">0.1</property>
-    <property name="far">500</property>
+    <property name="far">200</property>
     <property name="current">true</property>
   </node>
 %s
@@ -98,9 +98,13 @@ def main():
     size = ("960", "720")
     out = os.path.join(ROOT, "shots", "review")
     names = []
+    stats = False
     i = 0
     while i < len(args):
-        if args[i] == "--size":
+        if args[i] == "--stats":
+            stats = True
+            i += 1
+        elif args[i] == "--size":
             size = (args[i + 1], args[i + 2])
             i += 3
         elif args[i] == "--out":
@@ -134,6 +138,11 @@ def main():
                             size[1], "--msaa", "off", "--animation", "Daylight", "--frame", str(frame), "--text"],
                            cwd=ROOT, capture_output=True, text=True)
         print(name, "frame", frame, "->", os.path.relpath(png, ROOT), "" if r.returncode == 0 else r.stdout + r.stderr)
+        if stats:
+            r = subprocess.run(["hedra", "inspect", os.path.relpath(path, ROOT), "--stats", "--camera", "LowRes/Lens", "--size",
+                                "320", "240", "--text"], cwd=ROOT, capture_output=True, text=True)
+            line = next((ln for ln in r.stdout.splitlines() if ln.startswith("camera")), r.stdout[:300])
+            print("   ", line.split(";")[0])
 
 
 if __name__ == "__main__":

@@ -219,8 +219,8 @@
     <property name="shader_parameter/horizon_tint">Color(0.86, 0.9, 1, 1)</property>
   </sub_resource>
   <sub_resource id="Mesh_sky" type="SphereMesh">
-    <property name="radius">420</property>
-    <property name="height">840</property>
+    <property name="radius">180</property>
+    <property name="height">360</property>
     <property name="radial_segments">24</property>
     <property name="rings">12</property>
     <property name="material">SubResource("Mat_sky")</property>
@@ -561,835 +561,1111 @@
   <node name="Terrain" parent="." instance="ExtResource(&quot;5_terrain&quot;)"/>
   <node name="T00_groomed" parent="Terrain">
     <property name="material_override">SubResource("Mat_groomed")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T00_powder" parent="Terrain">
     <property name="material_override">SubResource("Mat_powder")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T00_rock" parent="Terrain">
     <property name="material_override">SubResource("Mat_rock")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T01_groomed" parent="Terrain">
     <property name="material_override">SubResource("Mat_groomed")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T01_powder" parent="Terrain">
     <property name="material_override">SubResource("Mat_powder")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T01_rock" parent="Terrain">
     <property name="material_override">SubResource("Mat_rock")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T02_groomed" parent="Terrain">
     <property name="material_override">SubResource("Mat_groomed")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T02_powder" parent="Terrain">
     <property name="material_override">SubResource("Mat_powder")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T02_rock" parent="Terrain">
     <property name="material_override">SubResource("Mat_rock")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T03_groomed" parent="Terrain">
     <property name="material_override">SubResource("Mat_groomed")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T03_powder" parent="Terrain">
     <property name="material_override">SubResource("Mat_powder")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T03_rock" parent="Terrain">
     <property name="material_override">SubResource("Mat_rock")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T04_groomed" parent="Terrain">
     <property name="material_override">SubResource("Mat_groomed")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T04_powder" parent="Terrain">
     <property name="material_override">SubResource("Mat_powder")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T04_rock" parent="Terrain">
     <property name="material_override">SubResource("Mat_rock")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T05_groomed" parent="Terrain">
     <property name="material_override">SubResource("Mat_groomed")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T05_powder" parent="Terrain">
     <property name="material_override">SubResource("Mat_powder")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T05_rock" parent="Terrain">
     <property name="material_override">SubResource("Mat_rock")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T06_groomed" parent="Terrain">
     <property name="material_override">SubResource("Mat_groomed")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T06_powder" parent="Terrain">
     <property name="material_override">SubResource("Mat_powder")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T06_rock" parent="Terrain">
     <property name="material_override">SubResource("Mat_rock")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T07_groomed" parent="Terrain">
     <property name="material_override">SubResource("Mat_groomed")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T07_powder" parent="Terrain">
     <property name="material_override">SubResource("Mat_powder")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T07_rock" parent="Terrain">
     <property name="material_override">SubResource("Mat_rock")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T08_groomed" parent="Terrain">
     <property name="material_override">SubResource("Mat_groomed")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T08_packed" parent="Terrain">
     <property name="material_override">SubResource("Mat_packed")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T08_powder" parent="Terrain">
     <property name="material_override">SubResource("Mat_powder")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T08_rock" parent="Terrain">
     <property name="material_override">SubResource("Mat_rock")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T09_groomed" parent="Terrain">
     <property name="material_override">SubResource("Mat_groomed")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T09_packed" parent="Terrain">
     <property name="material_override">SubResource("Mat_packed")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T09_powder" parent="Terrain">
     <property name="material_override">SubResource("Mat_powder")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T09_rock" parent="Terrain">
     <property name="material_override">SubResource("Mat_rock")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T10_groomed" parent="Terrain">
     <property name="material_override">SubResource("Mat_groomed")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T10_packed" parent="Terrain">
     <property name="material_override">SubResource("Mat_packed")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T10_powder" parent="Terrain">
     <property name="material_override">SubResource("Mat_powder")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T10_rock" parent="Terrain">
     <property name="material_override">SubResource("Mat_rock")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T11_groomed" parent="Terrain">
     <property name="material_override">SubResource("Mat_groomed")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T11_packed" parent="Terrain">
     <property name="material_override">SubResource("Mat_packed")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T11_powder" parent="Terrain">
     <property name="material_override">SubResource("Mat_powder")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T11_rock" parent="Terrain">
     <property name="material_override">SubResource("Mat_rock")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T12_groomed" parent="Terrain">
     <property name="material_override">SubResource("Mat_groomed")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T12_packed" parent="Terrain">
     <property name="material_override">SubResource("Mat_packed")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T12_powder" parent="Terrain">
     <property name="material_override">SubResource("Mat_powder")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T12_rock" parent="Terrain">
     <property name="material_override">SubResource("Mat_rock")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T13_groomed" parent="Terrain">
     <property name="material_override">SubResource("Mat_groomed")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T13_packed" parent="Terrain">
     <property name="material_override">SubResource("Mat_packed")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T13_powder" parent="Terrain">
     <property name="material_override">SubResource("Mat_powder")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T13_rock" parent="Terrain">
     <property name="material_override">SubResource("Mat_rock")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T14_groomed" parent="Terrain">
     <property name="material_override">SubResource("Mat_groomed")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T14_packed" parent="Terrain">
     <property name="material_override">SubResource("Mat_packed")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T14_powder" parent="Terrain">
     <property name="material_override">SubResource("Mat_powder")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T14_rock" parent="Terrain">
     <property name="material_override">SubResource("Mat_rock")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T15_groomed" parent="Terrain">
     <property name="material_override">SubResource("Mat_groomed")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T15_packed" parent="Terrain">
     <property name="material_override">SubResource("Mat_packed")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T15_powder" parent="Terrain">
     <property name="material_override">SubResource("Mat_powder")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T15_rock" parent="Terrain">
     <property name="material_override">SubResource("Mat_rock")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T16_groomed" parent="Terrain">
     <property name="material_override">SubResource("Mat_groomed")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T16_packed" parent="Terrain">
     <property name="material_override">SubResource("Mat_packed")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T16_powder" parent="Terrain">
     <property name="material_override">SubResource("Mat_powder")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T16_rock" parent="Terrain">
     <property name="material_override">SubResource("Mat_rock")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T17_groomed" parent="Terrain">
     <property name="material_override">SubResource("Mat_groomed")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T17_packed" parent="Terrain">
     <property name="material_override">SubResource("Mat_packed")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T17_powder" parent="Terrain">
     <property name="material_override">SubResource("Mat_powder")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T17_rock" parent="Terrain">
     <property name="material_override">SubResource("Mat_rock")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T18_groomed" parent="Terrain">
     <property name="material_override">SubResource("Mat_groomed")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T18_packed" parent="Terrain">
     <property name="material_override">SubResource("Mat_packed")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T18_powder" parent="Terrain">
     <property name="material_override">SubResource("Mat_powder")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T18_rock" parent="Terrain">
     <property name="material_override">SubResource("Mat_rock")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T19_groomed" parent="Terrain">
     <property name="material_override">SubResource("Mat_groomed")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T19_packed" parent="Terrain">
     <property name="material_override">SubResource("Mat_packed")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T19_powder" parent="Terrain">
     <property name="material_override">SubResource("Mat_powder")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T19_rock" parent="Terrain">
     <property name="material_override">SubResource("Mat_rock")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T20_groomed" parent="Terrain">
     <property name="material_override">SubResource("Mat_groomed")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T20_packed" parent="Terrain">
     <property name="material_override">SubResource("Mat_packed")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T20_powder" parent="Terrain">
     <property name="material_override">SubResource("Mat_powder")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T20_rock" parent="Terrain">
     <property name="material_override">SubResource("Mat_rock")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T21_groomed" parent="Terrain">
     <property name="material_override">SubResource("Mat_groomed")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T21_ice" parent="Terrain">
     <property name="material_override">SubResource("Mat_ice")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T21_packed" parent="Terrain">
     <property name="material_override">SubResource("Mat_packed")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T21_powder" parent="Terrain">
     <property name="material_override">SubResource("Mat_powder")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T21_rock" parent="Terrain">
     <property name="material_override">SubResource("Mat_rock")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T22_groomed" parent="Terrain">
     <property name="material_override">SubResource("Mat_groomed")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T22_ice" parent="Terrain">
     <property name="material_override">SubResource("Mat_ice")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T22_packed" parent="Terrain">
     <property name="material_override">SubResource("Mat_packed")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T22_powder" parent="Terrain">
     <property name="material_override">SubResource("Mat_powder")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T22_rock" parent="Terrain">
     <property name="material_override">SubResource("Mat_rock")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T23_groomed" parent="Terrain">
     <property name="material_override">SubResource("Mat_groomed")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T23_packed" parent="Terrain">
     <property name="material_override">SubResource("Mat_packed")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T23_powder" parent="Terrain">
     <property name="material_override">SubResource("Mat_powder")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T23_rock" parent="Terrain">
     <property name="material_override">SubResource("Mat_rock")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T24_groomed" parent="Terrain">
     <property name="material_override">SubResource("Mat_groomed")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T24_powder" parent="Terrain">
     <property name="material_override">SubResource("Mat_powder")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T24_rock" parent="Terrain">
     <property name="material_override">SubResource("Mat_rock")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T25_groomed" parent="Terrain">
     <property name="material_override">SubResource("Mat_groomed")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T25_packed" parent="Terrain">
     <property name="material_override">SubResource("Mat_packed")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T25_powder" parent="Terrain">
     <property name="material_override">SubResource("Mat_powder")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T25_rock" parent="Terrain">
     <property name="material_override">SubResource("Mat_rock")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T26_groomed" parent="Terrain">
     <property name="material_override">SubResource("Mat_groomed")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T26_packed" parent="Terrain">
     <property name="material_override">SubResource("Mat_packed")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T26_powder" parent="Terrain">
     <property name="material_override">SubResource("Mat_powder")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T26_rock" parent="Terrain">
     <property name="material_override">SubResource("Mat_rock")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T27_groomed" parent="Terrain">
     <property name="material_override">SubResource("Mat_groomed")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T27_packed" parent="Terrain">
     <property name="material_override">SubResource("Mat_packed")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T27_powder" parent="Terrain">
     <property name="material_override">SubResource("Mat_powder")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T27_rock" parent="Terrain">
     <property name="material_override">SubResource("Mat_rock")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T28_groomed" parent="Terrain">
     <property name="material_override">SubResource("Mat_groomed")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T28_packed" parent="Terrain">
     <property name="material_override">SubResource("Mat_packed")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T28_powder" parent="Terrain">
     <property name="material_override">SubResource("Mat_powder")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T28_rock" parent="Terrain">
     <property name="material_override">SubResource("Mat_rock")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T29_groomed" parent="Terrain">
     <property name="material_override">SubResource("Mat_groomed")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T29_packed" parent="Terrain">
     <property name="material_override">SubResource("Mat_packed")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T29_powder" parent="Terrain">
     <property name="material_override">SubResource("Mat_powder")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T29_rock" parent="Terrain">
     <property name="material_override">SubResource("Mat_rock")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T30_groomed" parent="Terrain">
     <property name="material_override">SubResource("Mat_groomed")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T30_packed" parent="Terrain">
     <property name="material_override">SubResource("Mat_packed")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T30_powder" parent="Terrain">
     <property name="material_override">SubResource("Mat_powder")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T30_rock" parent="Terrain">
     <property name="material_override">SubResource("Mat_rock")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T31_groomed" parent="Terrain">
     <property name="material_override">SubResource("Mat_groomed")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T31_packed" parent="Terrain">
     <property name="material_override">SubResource("Mat_packed")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T31_powder" parent="Terrain">
     <property name="material_override">SubResource("Mat_powder")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T31_rock" parent="Terrain">
     <property name="material_override">SubResource("Mat_rock")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T32_groomed" parent="Terrain">
     <property name="material_override">SubResource("Mat_groomed")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T32_packed" parent="Terrain">
     <property name="material_override">SubResource("Mat_packed")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T32_powder" parent="Terrain">
     <property name="material_override">SubResource("Mat_powder")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T32_rock" parent="Terrain">
     <property name="material_override">SubResource("Mat_rock")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T33_groomed" parent="Terrain">
     <property name="material_override">SubResource("Mat_groomed")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T33_packed" parent="Terrain">
     <property name="material_override">SubResource("Mat_packed")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T33_powder" parent="Terrain">
     <property name="material_override">SubResource("Mat_powder")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T33_rock" parent="Terrain">
     <property name="material_override">SubResource("Mat_rock")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T34_groomed" parent="Terrain">
     <property name="material_override">SubResource("Mat_groomed")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T34_powder" parent="Terrain">
     <property name="material_override">SubResource("Mat_powder")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T34_rock" parent="Terrain">
     <property name="material_override">SubResource("Mat_rock")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T35_groomed" parent="Terrain">
     <property name="material_override">SubResource("Mat_groomed")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T35_packed" parent="Terrain">
     <property name="material_override">SubResource("Mat_packed")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T35_powder" parent="Terrain">
     <property name="material_override">SubResource("Mat_powder")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T35_rock" parent="Terrain">
     <property name="material_override">SubResource("Mat_rock")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T36_groomed" parent="Terrain">
     <property name="material_override">SubResource("Mat_groomed")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T36_packed" parent="Terrain">
     <property name="material_override">SubResource("Mat_packed")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T36_powder" parent="Terrain">
     <property name="material_override">SubResource("Mat_powder")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T36_rock" parent="Terrain">
     <property name="material_override">SubResource("Mat_rock")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T37_groomed" parent="Terrain">
     <property name="material_override">SubResource("Mat_groomed")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T37_powder" parent="Terrain">
     <property name="material_override">SubResource("Mat_powder")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T37_rock" parent="Terrain">
     <property name="material_override">SubResource("Mat_rock")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T38_groomed" parent="Terrain">
     <property name="material_override">SubResource("Mat_groomed")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T38_powder" parent="Terrain">
     <property name="material_override">SubResource("Mat_powder")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T38_rock" parent="Terrain">
     <property name="material_override">SubResource("Mat_rock")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T39_groomed" parent="Terrain">
     <property name="material_override">SubResource("Mat_groomed")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T39_powder" parent="Terrain">
     <property name="material_override">SubResource("Mat_powder")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T39_rock" parent="Terrain">
     <property name="material_override">SubResource("Mat_rock")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T40_groomed" parent="Terrain">
     <property name="material_override">SubResource("Mat_groomed")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T40_powder" parent="Terrain">
     <property name="material_override">SubResource("Mat_powder")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T40_rock" parent="Terrain">
     <property name="material_override">SubResource("Mat_rock")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T41_groomed" parent="Terrain">
     <property name="material_override">SubResource("Mat_groomed")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T41_powder" parent="Terrain">
     <property name="material_override">SubResource("Mat_powder")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T41_rock" parent="Terrain">
     <property name="material_override">SubResource("Mat_rock")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T42_groomed" parent="Terrain">
     <property name="material_override">SubResource("Mat_groomed")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T42_powder" parent="Terrain">
     <property name="material_override">SubResource("Mat_powder")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T42_rock" parent="Terrain">
     <property name="material_override">SubResource("Mat_rock")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T00_far" parent="Terrain">
     <property name="material_override">SubResource("Mat_far")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T01_far" parent="Terrain">
     <property name="material_override">SubResource("Mat_far")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T02_far" parent="Terrain">
     <property name="material_override">SubResource("Mat_far")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T03_far" parent="Terrain">
     <property name="material_override">SubResource("Mat_far")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T04_far" parent="Terrain">
     <property name="material_override">SubResource("Mat_far")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T05_far" parent="Terrain">
     <property name="material_override">SubResource("Mat_far")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T06_far" parent="Terrain">
     <property name="material_override">SubResource("Mat_far")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T07_far" parent="Terrain">
     <property name="material_override">SubResource("Mat_far")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T08_far" parent="Terrain">
     <property name="material_override">SubResource("Mat_far")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T09_far" parent="Terrain">
     <property name="material_override">SubResource("Mat_far")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T10_far" parent="Terrain">
     <property name="material_override">SubResource("Mat_far")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T11_far" parent="Terrain">
     <property name="material_override">SubResource("Mat_far")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T12_far" parent="Terrain">
     <property name="material_override">SubResource("Mat_far")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T13_far" parent="Terrain">
     <property name="material_override">SubResource("Mat_far")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T14_far" parent="Terrain">
     <property name="material_override">SubResource("Mat_far")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T15_far" parent="Terrain">
     <property name="material_override">SubResource("Mat_far")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T16_far" parent="Terrain">
     <property name="material_override">SubResource("Mat_far")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T17_far" parent="Terrain">
     <property name="material_override">SubResource("Mat_far")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T18_far" parent="Terrain">
     <property name="material_override">SubResource("Mat_far")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T19_far" parent="Terrain">
     <property name="material_override">SubResource("Mat_far")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T20_far" parent="Terrain">
     <property name="material_override">SubResource("Mat_far")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T21_far" parent="Terrain">
     <property name="material_override">SubResource("Mat_far")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T22_far" parent="Terrain">
     <property name="material_override">SubResource("Mat_far")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T23_far" parent="Terrain">
     <property name="material_override">SubResource("Mat_far")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T24_far" parent="Terrain">
     <property name="material_override">SubResource("Mat_far")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T25_far" parent="Terrain">
     <property name="material_override">SubResource("Mat_far")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T26_far" parent="Terrain">
     <property name="material_override">SubResource("Mat_far")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T27_far" parent="Terrain">
     <property name="material_override">SubResource("Mat_far")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T28_far" parent="Terrain">
     <property name="material_override">SubResource("Mat_far")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T29_far" parent="Terrain">
     <property name="material_override">SubResource("Mat_far")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T30_far" parent="Terrain">
     <property name="material_override">SubResource("Mat_far")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T31_far" parent="Terrain">
     <property name="material_override">SubResource("Mat_far")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T32_far" parent="Terrain">
     <property name="material_override">SubResource("Mat_far")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T33_far" parent="Terrain">
     <property name="material_override">SubResource("Mat_far")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T34_far" parent="Terrain">
     <property name="material_override">SubResource("Mat_far")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T35_far" parent="Terrain">
     <property name="material_override">SubResource("Mat_far")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T36_far" parent="Terrain">
     <property name="material_override">SubResource("Mat_far")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T37_far" parent="Terrain">
     <property name="material_override">SubResource("Mat_far")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T38_far" parent="Terrain">
     <property name="material_override">SubResource("Mat_far")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T39_far" parent="Terrain">
     <property name="material_override">SubResource("Mat_far")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T40_far" parent="Terrain">
     <property name="material_override">SubResource("Mat_far")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T41_far" parent="Terrain">
     <property name="material_override">SubResource("Mat_far")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="T42_far" parent="Terrain">
     <property name="material_override">SubResource("Mat_far")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <!-- props and the features' meshes (dressing.rmdlcmd) -->
   <node name="Dressing" parent="." instance="ExtResource(&quot;6_dressing&quot;)"/>
   <node name="D00_arch" parent="Dressing">
     <property name="material_override">SubResource("Mat_arch")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="D00_banner" parent="Dressing">
     <property name="material_override">SubResource("Mat_banner")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="D00_building" parent="Dressing">
     <property name="material_override">SubResource("Mat_building")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="D00_fence" parent="Dressing">
     <property name="material_override">SubResource("Mat_fence")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="D00_lift" parent="Dressing">
     <property name="material_override">SubResource("Mat_lift")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="D01_banner" parent="Dressing">
     <property name="material_override">SubResource("Mat_banner")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="D01_fence" parent="Dressing">
     <property name="material_override">SubResource("Mat_fence")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="D01_lift" parent="Dressing">
     <property name="material_override">SubResource("Mat_lift")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="D02_accent" parent="Dressing">
     <property name="material_override">SubResource("Mat_accent")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="D02_banner" parent="Dressing">
     <property name="material_override">SubResource("Mat_banner")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="D02_fence" parent="Dressing">
     <property name="material_override">SubResource("Mat_fence")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="D02_lift" parent="Dressing">
     <property name="material_override">SubResource("Mat_lift")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="D03_accent" parent="Dressing">
     <property name="material_override">SubResource("Mat_accent")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="D03_banner" parent="Dressing">
     <property name="material_override">SubResource("Mat_banner")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="D03_lift" parent="Dressing">
     <property name="material_override">SubResource("Mat_lift")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="D04_accent" parent="Dressing">
     <property name="material_override">SubResource("Mat_accent")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="D04_banner" parent="Dressing">
     <property name="material_override">SubResource("Mat_banner")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="D04_bark" parent="Dressing">
     <property name="material_override">SubResource("Mat_bark")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="D04_box" parent="Dressing">
     <property name="material_override">SubResource("Mat_box")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="D04_crowd" parent="Dressing">
     <property name="material_override">SubResource("Mat_crowd")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="D04_fence" parent="Dressing">
     <property name="material_override">SubResource("Mat_fence")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="D04_lift" parent="Dressing">
     <property name="material_override">SubResource("Mat_lift")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="D04_rail" parent="Dressing">
     <property name="material_override">SubResource("Mat_rail")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="D05_banner" parent="Dressing">
     <property name="material_override">SubResource("Mat_banner")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="D05_box" parent="Dressing">
     <property name="material_override">SubResource("Mat_box")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="D05_lift" parent="Dressing">
     <property name="material_override">SubResource("Mat_lift")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="D05_rail" parent="Dressing">
     <property name="material_override">SubResource("Mat_rail")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="D06_accent" parent="Dressing">
     <property name="material_override">SubResource("Mat_accent")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="D06_arch" parent="Dressing">
     <property name="material_override">SubResource("Mat_arch")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="D06_banner" parent="Dressing">
     <property name="material_override">SubResource("Mat_banner")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="D06_lift" parent="Dressing">
     <property name="material_override">SubResource("Mat_lift")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="D06_pine_cone" parent="Dressing">
     <property name="material_override">SubResource("Mat_pine_cone")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="D07_accent" parent="Dressing">
     <property name="material_override">SubResource("Mat_accent")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="D07_banner" parent="Dressing">
     <property name="material_override">SubResource("Mat_banner")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="D07_box" parent="Dressing">
     <property name="material_override">SubResource("Mat_box")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="D07_building" parent="Dressing">
     <property name="material_override">SubResource("Mat_building")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="D07_lift" parent="Dressing">
     <property name="material_override">SubResource("Mat_lift")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="D07_packed" parent="Dressing">
     <property name="material_override">SubResource("Mat_packed")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="D07_pine_cone" parent="Dressing">
     <property name="material_override">SubResource("Mat_pine_cone")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="D07_rail" parent="Dressing">
     <property name="material_override">SubResource("Mat_rail")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="D08_accent" parent="Dressing">
     <property name="material_override">SubResource("Mat_accent")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="D08_banner" parent="Dressing">
     <property name="material_override">SubResource("Mat_banner")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="D08_lift" parent="Dressing">
     <property name="material_override">SubResource("Mat_lift")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="D08_pine_cone" parent="Dressing">
     <property name="material_override">SubResource("Mat_pine_cone")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="D09_accent" parent="Dressing">
     <property name="material_override">SubResource("Mat_accent")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="D09_arch" parent="Dressing">
     <property name="material_override">SubResource("Mat_arch")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="D09_banner" parent="Dressing">
     <property name="material_override">SubResource("Mat_banner")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="D09_building" parent="Dressing">
     <property name="material_override">SubResource("Mat_building")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="D09_crowd" parent="Dressing">
     <property name="material_override">SubResource("Mat_crowd")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="D09_fence" parent="Dressing">
     <property name="material_override">SubResource("Mat_fence")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="D09_lift" parent="Dressing">
     <property name="material_override">SubResource("Mat_lift")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="D09_neon" parent="Dressing">
     <property name="material_override">SubResource("Mat_neon")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="D10_building" parent="Dressing">
     <property name="material_override">SubResource("Mat_building")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <!-- crossed-quad pines, a MultiMesh a chunk and variant -->
   <node name="Trees" type="Node3D" parent="."/>
   <node name="Pines_00_a" type="MultiMeshInstance3D" parent="Trees">
     <property name="multimesh">SubResource("Trees_00_a")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="Pines_00_b" type="MultiMeshInstance3D" parent="Trees">
     <property name="multimesh">SubResource("Trees_00_b")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="Pines_01_a" type="MultiMeshInstance3D" parent="Trees">
     <property name="multimesh">SubResource("Trees_01_a")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="Pines_01_b" type="MultiMeshInstance3D" parent="Trees">
     <property name="multimesh">SubResource("Trees_01_b")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="Pines_02_a" type="MultiMeshInstance3D" parent="Trees">
     <property name="multimesh">SubResource("Trees_02_a")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="Pines_02_b" type="MultiMeshInstance3D" parent="Trees">
     <property name="multimesh">SubResource("Trees_02_b")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="Pines_03_a" type="MultiMeshInstance3D" parent="Trees">
     <property name="multimesh">SubResource("Trees_03_a")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="Pines_03_b" type="MultiMeshInstance3D" parent="Trees">
     <property name="multimesh">SubResource("Trees_03_b")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="Pines_04_a" type="MultiMeshInstance3D" parent="Trees">
     <property name="multimesh">SubResource("Trees_04_a")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="Pines_04_b" type="MultiMeshInstance3D" parent="Trees">
     <property name="multimesh">SubResource("Trees_04_b")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="Pines_05_a" type="MultiMeshInstance3D" parent="Trees">
     <property name="multimesh">SubResource("Trees_05_a")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="Pines_05_b" type="MultiMeshInstance3D" parent="Trees">
     <property name="multimesh">SubResource("Trees_05_b")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="Pines_06_a" type="MultiMeshInstance3D" parent="Trees">
     <property name="multimesh">SubResource("Trees_06_a")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="Pines_06_b" type="MultiMeshInstance3D" parent="Trees">
     <property name="multimesh">SubResource("Trees_06_b")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="Pines_07_a" type="MultiMeshInstance3D" parent="Trees">
     <property name="multimesh">SubResource("Trees_07_a")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="Pines_07_b" type="MultiMeshInstance3D" parent="Trees">
     <property name="multimesh">SubResource("Trees_07_b")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="Pines_08_a" type="MultiMeshInstance3D" parent="Trees">
     <property name="multimesh">SubResource("Trees_08_a")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="Pines_08_b" type="MultiMeshInstance3D" parent="Trees">
     <property name="multimesh">SubResource("Trees_08_b")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="Pines_09_a" type="MultiMeshInstance3D" parent="Trees">
     <property name="multimesh">SubResource("Trees_09_a")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="Pines_09_b" type="MultiMeshInstance3D" parent="Trees">
     <property name="multimesh">SubResource("Trees_09_b")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="Pines_10_a" type="MultiMeshInstance3D" parent="Trees">
     <property name="multimesh">SubResource("Trees_10_a")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <node name="Pines_10_b" type="MultiMeshInstance3D" parent="Trees">
     <property name="multimesh">SubResource("Trees_10_b")</property>
+    <property name="visibility_range_end">170</property>
   </node>
   <!-- the line (the low line through the split) and the high line -->
   <node name="Line" type="Path3D" parent=".">
@@ -1650,7 +1926,7 @@
     <property name="far">500</property>
   </node>
   <node name="MegaSide" type="Camera3D" parent="ReviewCams">
-    <property name="transform">Transform3D(0.1104, 0.2936, -0.9495, 0, 0.9554, 0.2954, 0.9939, -0.0326, 0.1055, -45, -349.6794, -1300.5)</property>
+    <property name="transform">Transform3D(0.9222, 0.13, -0.3642, 0, 0.9418, 0.3362, 0.3867, -0.31, 0.8685, -26, -343.6794, -1248.5)</property>
     <property name="fov">66</property>
     <property name="near">0.1</property>
     <property name="far">500</property>

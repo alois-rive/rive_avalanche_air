@@ -80,7 +80,7 @@
     <property name="rotation_degrees">Vector3(-12, 0, 0)</property>
     <property name="fov">66</property>
     <property name="near">0.1</property>
-    <property name="far">500</property>
+    <property name="far">200</property>
     <property name="current">true</property>
   </node>
   <node name="Sound" type="Node" parent=".">

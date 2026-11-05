@@ -73,6 +73,11 @@ def chalet(bag, xf, w=6.0, d=7.0, h=3.2, roof_h=2.6):
             bag("building").face([a, e, c, b], [(roof[0], roof[3]), (roof[2], roof[3]), (roof[2], roof[1]), (roof[0], roof[1])], False)
         else:
             bag("building").face([e, a, b, c], [(roof[0], roof[3]), (roof[2], roof[3]), (roof[2], roof[1]), (roof[0], roof[1])], False)
+    # a chimney through the roof, a balcony beam along the front
+    box(bag("building"), xf, w * 0.18, w * 0.18 + 0.7, h + roof_h * 0.4, h + roof_h + 0.6, -d * 0.2, -d * 0.2 + 0.7,
+        uvr=pages.uv(B, "concrete"), faces="fblrt")
+    box(bag("building"), xf, -w / 2 - 0.2, w / 2 + 0.2, h * 0.55, h * 0.55 + 0.25, d / 2, d / 2 + 0.9,
+        uvr=pages.uv(B, "timber"), faces="ftd")
     # the gable ends (triangles) front and back
     for zz, flip in ((d / 2, False), (-d / 2, True)):
         p = [xf((-w / 2, h, zz)), xf((w / 2, h, zz)), xf((0, h + roof_h - 0.2, zz))]
@@ -128,10 +133,10 @@ def span_banner(bag, xf, width, sponsor):
     B = pages.BANNERS
     L = pages.LIFT
     for side in (-1, 1):
-        tube(bag("lift"), xf((side * width / 2, -0.2, 0)), xf((side * width / 2, 5.4, 0)), 0.14, 6, pages.uv(L, "steel"))
-    # panels of the page's 2:1 proportion, the sponsor alternating with the resort
+        tube(bag("lift"), xf((side * width / 2, -0.2, 0)), xf((side * width / 2, 5.4, 0)), 0.14, 4, pages.uv(L, "steel"))
+    # panels near the page's 2:1 proportion, the sponsor alternating with the resort
     inner = width - 0.4
-    n = max(1, int(round(inner / 4.0)))
+    n = max(1, min(6, int(round(inner / 4.0))))
     pw = inner / n
     for k in range(n):
         x0 = -inner / 2 + k * pw
@@ -143,7 +148,7 @@ def post_banner(bag, xf, sponsor):
     B = pages.BANNERS
     L = pages.LIFT
     for side in (-1, 1):
-        tube(bag("lift"), xf((side * 1.2, -0.2, 0)), xf((side * 1.2, 2.3, 0)), 0.07, 4, pages.uv(L, "steel"))
+        tube(bag("lift"), xf((side * 1.2, -0.2, 0)), xf((side * 1.2, 2.3, 0)), 0.07, 3, pages.uv(L, "steel"), smooth=False)
     box(bag("banner"), xf, -1.2, 1.2, 1.0, 2.2, -0.03, 0.03, uvr=pages.uv(B, sponsor), faces="fb")
 
 

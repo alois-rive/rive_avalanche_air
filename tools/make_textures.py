@@ -293,11 +293,14 @@ def pine_cone():
     for y in range(64):
         for x in range(64):
             n = pnoise(x, y, 8, 64, 71)
-            v = 2 if n < 0.4 else 3 if n < 0.6 else 4
-            if (x + (y // 4)) % 6 == 0:
-                v = 1
-            if y < 10 + int(n * 8) and rnd(x, y, 72) > 0.35:
+            v = 3 if n < 0.4 else 4 if n < 0.62 else 5
+            if (x + (y // 4)) % 11 == 0:
+                v = 2
+            # snow on the tier's top, and caught in the branches
+            if y < 14 + int(n * 8) and rnd(x, y, 72) > 0.3:
                 v = 7 if x % 3 else 6
+            elif rnd(x // 2, y // 2, 73) > 0.88:
+                v = 6
             t.set(x, y, v)
     return t
 
@@ -631,8 +634,11 @@ def mountains():
                 v = 7 if slope > 0 else 6
             else:
                 v = 4 if slope > 0 else 3
-                if y > 52:
-                    v = 2
+            # the feet of the range fade into the haze (the fog's colour below)
+            if y > 50:
+                v = 5 if (y > 56 or (x + y) % 2) else v
+            if y > 58:
+                v = 6
             t.set(x, y, v)
     return t
 

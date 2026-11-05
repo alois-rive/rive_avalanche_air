@@ -22,6 +22,11 @@ SOURCE = "tools/course/make_course.py from tools/course/course.py"
 # ---- the materials (LOOK.md, section 4) --------------------------------------
 # name: (shader, texture, {parameters}); every surface and cut-out material
 # takes the sun's parameters, which the Daylight timeline keys.
+# Drawn only within this distance of the lens (to a node's box's centre):
+# the fog ends at 140 m by day, 110 at dusk; a tile's or a region's centre
+# can be 100 m beside the lens.
+VIS_RANGE = "170"
+
 SURFACE = "psx_surface"
 CUTOUT = "psx_cutout"
 CHROME = "psx_chrome"
@@ -230,7 +235,7 @@ class Course:
             ("shader_parameter/horizon_band", "Vector2(-2, 7)"),
             ("shader_parameter/horizon_tint", color((0.86, 0.9, 1.0))),
         ])
-        sc.sub_resource("Mesh_sky", "SphereMesh", [("radius", "420"), ("height", "840"), ("radial_segments", "24"),
+        sc.sub_resource("Mesh_sky", "SphereMesh", [("radius", "180"), ("height", "360"), ("radial_segments", "24"),
                                                    ("rings", "12"), ("material", 'SubResource("Mat_sky")')])
         sc.sub_resource("Env_game", "Environment", [
             ("background_mode", "1"), ("background_color", color(sun0["horizon"])), ("tonemap_mode", "0"),
@@ -268,14 +273,16 @@ class Course:
                                                ("material_override", 'SubResource("Mat_sky")')])
         sc.node("Terrain", None, ".", instance="5_terrain", comment="the terrain's tiles (terrain.rmdlcmd), each its material")
         for m in self.terrain:
-            sc.node(m.name, None, "Terrain", [("material_override", 'SubResource("Mat_%s")' % m.material)])
+            sc.node(m.name, None, "Terrain", [("material_override", 'SubResource("Mat_%s")' % m.material),
+                                              ("visibility_range_end", VIS_RANGE)])
         sc.node("Dressing", None, ".", instance="6_dressing", comment="props and the features' meshes (dressing.rmdlcmd)")
         for m in self.dressing:
-            sc.node(m.name, None, "Dressing", [("material_override", 'SubResource("Mat_%s")' % m.material)])
+            sc.node(m.name, None, "Dressing", [("material_override", 'SubResource("Mat_%s")' % m.material),
+                                               ("visibility_range_end", VIS_RANGE)])
         sc.node("Trees", "Node3D", ".", comment="crossed-quad pines, a MultiMesh a chunk and variant")
         for (ck, v) in sorted(chunks):
             sc.node("Pines_%02d_%s" % (ck, v), "MultiMeshInstance3D", "Trees",
-                    [("multimesh", 'SubResource("Trees_%02d_%s")' % (ck, v))])
+                    [("multimesh", 'SubResource("Trees_%02d_%s")' % (ck, v)), ("visibility_range_end", VIS_RANGE)])
         sc.node("Line", "Path3D", ".", [("curve", 'SubResource("Curve_line")')], comment="the line (the low line through the split) and the high line")
         sc.node("HighLine", "Path3D", ".", [("curve", 'SubResource("Curve_high")')])
         sc.node("Rails", "Node3D", ".", comment="each rail's, box's and log's grind curve (its top)")
@@ -444,8 +451,8 @@ class Course:
         # the mega-jump from the ridge's side (the Cliff camera's place)
         j = d.mega.j
         ox, oz, fx, fz, rx, rz = d.feats.mega_frame
-        eye = (ox + fx * 30 - rx * 45, j.y0 + 6, oz + fz * 30 - rz * 45)
-        out.append(("MegaSide", eye, (ox + fx * 35, j.y0 - 8, oz + fz * 35)))
+        eye = (ox - fx * 22 - rx * 26, j.y0 + 12, oz - fz * 22 - rz * 26)
+        out.append(("MegaSide", eye, (ox + fx * 40, j.y0 - 12, oz + fz * 40)))
         # the whole course from above the start
         out.append(("Overview", (60.0, 60.0, 40.0), (0.0, -150.0, -500.0)))
         return out
