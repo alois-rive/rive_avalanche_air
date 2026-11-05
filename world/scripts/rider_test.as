@@ -10,7 +10,7 @@ import { LAND_CLEAN, LAND_PERFECT, LAND_SKETCHY, game } from "./game_state";
 import { Input } from "./input";
 import { DEG } from "./lib/kinematic";
 import {
-    CONTROL_AT, LAND_CRASH, MODE_AIR, MODE_GROUND, MODE_TUMBLE, RESPAWN_AT, Rider, SPEED_CAP, judgeLanding, popSpeed,
+    CONTROL_AT, CRASH_OTHER, LAND_CRASH, MODE_AIR, MODE_GROUND, MODE_TUMBLE, RESPAWN_AT, Rider, SPEED_CAP, judgeLanding, popSpeed,
     snowAccel, yawRateDeg,
 } from "./rider";
 import { Tricks } from "./tricks";
@@ -115,7 +115,7 @@ export class RiderTests extends Tests {
             r.placeAt(40, false, 14);
             const s0 = r.s;
             const inp = new Input();
-            r.crash(false);
+            r.crash(CRASH_OTHER);
             expect.that(r.mode).is(MODE_TUMBLE);
             expect.that(tricks.crashes).is(1);
             let ticks = 0;

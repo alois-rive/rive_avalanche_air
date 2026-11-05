@@ -176,6 +176,8 @@ export class Tricks {
     bailSeq: i32 = 0;
     praise: i32 = PRAISE_NONE;
     lastPoints: f32 = 0;
+    // trace the banks to the console (tuning)
+    log: bool = false;
 
     // A new run: everything cleared.
     reset(): void {
@@ -403,6 +405,9 @@ export class Tricks {
         t.live = false;
         t.points = total;
         game.events.push(EV_BANK, total, <f32>praise);
+        if (this.log) console.log("bank " + total.toString() + " x" + mult.toString() + " sum " + base.toString() + " q " + quality.toString() +
+            " spin " + game.trick.spin.toString() + " flip " + game.trick.flip.toString() + " grab " + game.trick.grab1.toString() +
+            " grind " + game.trick.grind.toString());
         this.clearCombo();
         this.publish();
     }

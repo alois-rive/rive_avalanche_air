@@ -16,8 +16,8 @@
 // - Title (the attract): cuts between angles round the rider every 5 s.
 // - Gate: in front of the rider in the start gate, for the countdown.
 //
-// The sky sphere (LowRes/Sky) is kept centred on the lens, as the frame
-// rig asks (psx_frame.rscn), so the 1.4 km run never leaves it.
+// (The sky sphere is the course's, kept on the lens by daylight.as; the
+// lens's far plane, 200 m, is make_run.py's.)
 import { Camera3D, Mat4, NodeScript, SceneNode, Vec3, Vec4 } from "hedra_engine/script";
 import { GroundHit, Obstacle, ground, obstacle, obstaclesNear } from "./course_api";
 import { DEG, clampf, wrapAngle } from "./lib/kinematic";
@@ -30,7 +30,6 @@ const CLEARANCE: f32 = 0.6;   // above the snow
 const MARGIN: f32 = 0.4;      // in front of an obstacle
 
 export class ChaseCamera extends NodeScript {
-    private sky: SceneNode? = null;
     private placed: bool = false;
     private yaw: f32 = 0;
     private yawV: f32 = 0;
@@ -51,7 +50,6 @@ export class ChaseCamera extends NodeScript {
     private near: StaticArray<i32> = new StaticArray<i32>(16);
 
     override _ready(): void {
-        this.sky = this.getNode("../Sky");
     }
 
     override _process(delta: f32): void {
@@ -243,7 +241,5 @@ export class ChaseCamera extends NodeScript {
         this.node.local = Mat4(Vec4(xx, xy, xz, 0), Vec4(yx, yy, yz, 0), Vec4(zx, zy, zz, 0), Vec4(cx, cy, cz, 1));
         const cam = this.node as Camera3D;
         if (cam.fov != fov) cam.fov = fov;
-        const sky = this.sky;
-        if (sky != null) sky.setPosition(Vec3(cx, cy, cz));
     }
 }

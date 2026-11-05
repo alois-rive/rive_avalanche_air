@@ -43,6 +43,13 @@ export const MODE_TUMBLE: i32 = 3;
 
 export const LAND_CRASH: i32 = 3;
 
+// why a crash happened (lastCrash; the debug log)
+export const CRASH_LANDING: i32 = 1;
+export const CRASH_OBSTACLE: i32 = 2;
+export const CRASH_FALL: i32 = 3;
+export const CRASH_OTHER: i32 = 4;
+
+
 const G: f32 = 9.81;
 // on the snow (section 3)
 export const K_STAND: f32 = 0.0055;
@@ -67,6 +74,10 @@ const TUCK_OUT: f32 = 6.67;         // /s (0.15 s)
 const CROUCH_IN: f32 = 6.67;
 const REVERT_ANGLE: f32 = 120 * DEG;
 const NORMAL_EASE: f32 = 20;        // /s: the drawn ground plane
+const PROBE_REACH: f32 = 0.4;       // the probes find the snow this far below the board
+const LEAVE_SPEED: f32 = 1.5;       // moving away from the snow faster: airborne
+const STEEP_NY: f32 = 0.64;         // steeper than about 50 degrees: a face, not a slope
+const FACE_NY: f32 = 0.66;          // steeper than 48 degrees (a rock band, a drop's face): ridden off, not down
 // the ollie (section 4)
 const CHARGE_MAX: f32 = 0.4;
 const POP_TAP: f32 = 3.0;
@@ -98,6 +109,7 @@ const SKETCHY_TILT: f32 = 40 * DEG;
 const HARD_IMPACT: f32 = 9;
 const CRASH_IMPACT: f32 = 13;
 const PERFECT_BOOST: f32 = 2.5;
+const PERFECT_BOOST_UPTO: f32 = 20;
 const ASSIST_TIME: f32 = 0.2;
 const ASSIST_YAW: f32 = 25 * DEG;
 const ASSIST_TILT: f32 = 20 * DEG;
@@ -116,6 +128,8 @@ export const CONTROL_AT: f32 = 1.25;
 export const BLINK_TIME: f32 = 1.0;
 const RESPAWN_MIN_SPEED: f32 = 8;
 const STUMBLE_TIME: f32 = 0.6;
+const REPEAT_RANGE: f32 = 30;       // a crash this near the last respawn moves the next on
+const REPEAT_BUMP: f32 = 25;
 
 // ---- the model's laws, pure (rider_test.as holds them to RIDER.md's numbers) ----
 
@@ -228,6 +242,9 @@ export class Rider {
     crashSpeed: f32 = 0;
     respawned: bool = false;
     lastLand: i32 = -1;
+    lastCrash: i32 = 0;
+    // trace crashes and respawns to the console (tuning)
+    log: bool = false;
     // progress
     lineIndex: i32 = -1;
     lineYaw: f32 = 0;      // the line's flat direction here
@@ -235,6 +252,9 @@ export class Rider {
     section: i32 = 1;
     highLine: bool = false;
     lineCommitted: bool = false;
+    bestS: f32 = 0;          // the furthest reached (the stuck check)
+    lastRespawnS: f32 = -1000;
+    respawnBump: f32 = 0;
     lineTaken: i32 = 0;    // 1 high, 0 low (the results)
     // parts
     grind: Grind = new Grind();
@@ -326,7 +346,19 @@ export class Rider {
         this.respawned = false;
         this.lineCommitted = false;
         this.lineTaken = 0;
+        this.bestS = 0;
+        this.lastRespawnS = -1000;
+        this.respawnBump = 0;
         this.lastLand = -1;
+    }
+
+    // The start gate's push off at GO (the start's first 15 m are 6 degrees:
+    // from rest they would take 7 s, COURSE.md section 1 plans 4 s for 40 m).
+    pushOff(speed: f32): void {
+        if (this.mode != MODE_GROUND || this.V >= speed) return;
+        this.V = speed;
+        this.psi = this.heading;
+        this.updateVelocity();
     }
 
     // Whether the input reaches the rider (not tumbling, not respawning, not stumbling).
@@ -409,8 +441,9 @@ export class Rider {
         const gz = this.ny * this.nz;
         const gl = Mathf.sqrt(gx * gx + gz * gz);
         // skating below 1 m/s: pushed down the fall line, the board eased to it
-        if (this.V < SKATE_SPEED && gl > 0.01) {
-            const down = Mathf.atan2(-gx / gl, -gz / gl);
+        if (this.V < SKATE_SPEED) {
+            // down the fall line; on the flat (a roof, a table), down the line
+            const down = gl > 0.05 ? Mathf.atan2(-gx / gl, -gz / gl) : this.lineYaw;
             const d = wrapAngle(down - this.heading);
             const step = SKATE_TURN * dt;
             this.heading = wrapAngle(this.heading + (d > step ? step : (d < -step ? -step : d)));
@@ -474,18 +507,21 @@ export class Rider {
         const oz = this.z;
         this.x += vx * dt;
         this.z += vz * dt;
-        // the snow under the new place: still on it, or off into the air
+        // the snow under the new place: still on it, or off into the air.
+        // The probes reach 0.4 m below the board (section 2): the snow is
+        // followed over a convex break while it is within their reach, so a
+        // fold in the terrain at speed is no jump; the board leaves it off a
+        // lip moving away from it faster than 1.5 m/s, over a drop beyond the
+        // probes' reach, or onto a face too steep to ride (a rock band).
+        const wasLip = this.onLip;
         const onNew = ground(this.x, this.z, h);
         const yb = oy + vy * dt - 0.5 * G * dt * dt;
         const floor = h.y - sink;
         const gap = yb - floor;
-        let leave = !onNew || gap > 0.02;
-        if (!leave && gap > 0.0005) {
-            this.gapTicks++;
-            if (this.gapTicks >= 2) leave = true;
-        } else {
-            this.gapTicks = 0;
-        }
+        const sep = vx * h.nx + vy * h.ny + vz * h.nz;
+        let leave = !onNew || h.ny < STEEP_NY || gap > PROBE_REACH || (wasLip && !h.lip && sep > LEAVE_SPEED) ||
+            (h.ny < FACE_NY && sep > LEAVE_SPEED && gap > 0);
+        this.gapTicks = 0;
         this.vx = vx;
         this.vy = vy;
         this.vz = vz;
@@ -545,7 +581,7 @@ export class Rider {
             return;
         }
         this.collide(ox, oz);
-        if (this.mode == MODE_GROUND && inFallZone(this.x, this.y, this.z)) this.crash(false);
+        if (this.mode == MODE_GROUND && inFallZone(this.x, this.y, this.z)) this.crash(CRASH_FALL);
         if (this.mode == MODE_GROUND) this.q.setOnGround(this.heading + (this.switchStance ? PI_F : 0), this.dnx, this.dny, this.dnz);
     }
 
@@ -650,6 +686,9 @@ export class Rider {
     // ---- in the air -----------------------------------------------------------
 
     private toAir(perfect: bool): void {
+        if (this.log) console.log("takeoff s " + this.s.toString() + " x " + this.x.toString() + " v " +
+            Mathf.sqrt(this.vx * this.vx + this.vz * this.vz).toString() + " vy " + this.vy.toString() + " lip " +
+            (this.onLip ? "1" : "0") + " perfect " + (perfect ? "1" : "0") + " feature " + this.feature.toString());
         this.mode = MODE_AIR;
         this.airTime = 0;
         this.spinRate = 0;
@@ -744,7 +783,7 @@ export class Rider {
         if (Mathf.abs(sy) < 0.3 && Mathf.abs(this.flipRate) < 30) this.level(dt);
         if (this.landingAssist && this.landT <= ASSIST_TIME) this.assist(dt);
         // a rail
-        if (this.grind.tryCatch(this.x, this.y, this.z, this.vx, this.vy, this.vz, false, false, this.boardYaw())) {
+        if (this.grind.tryCatch(this.x, this.y, this.z, this.vx, this.vy, this.vz, false, this.crouching, this.boardYaw())) {
             this.toGrind();
             return;
         }
@@ -761,7 +800,7 @@ export class Rider {
             }
         }
         this.collide(ox, oz);
-        if (this.mode == MODE_AIR && inFallZone(this.x, this.y, this.z)) this.crash(false);
+        if (this.mode == MODE_AIR && inFallZone(this.x, this.y, this.z)) this.crash(CRASH_FALL);
     }
 
     // The flight solved ahead to its landing (0.05 s steps against the
@@ -776,15 +815,23 @@ export class Rider {
         let lastY = py;
         let lastGap: f32 = 1;
         this.landT = SOLVE_MAX;
-        this.landX = px + this.vx * SOLVE_MAX;
-        this.landZ = pz + this.vz * SOLVE_MAX;
+        this.landX = px + this.vx * SOLVE_MAX * 0.9;
+        this.landZ = pz + this.vz * SOLVE_MAX * 0.9;
         this.landY = py - 50;
         this.landNx = 0;
         this.landNy = 1;
         this.landNz = 0;
+        let svx = this.vx;
+        let svz = this.vz;
         while (t < SOLVE_MAX) {
-            const nx = px + this.vx * SOLVE_STEP;
-            const nz = pz + this.vz * SOLVE_STEP;
+            const sh = Mathf.sqrt(svx * svx + svz * svz);
+            if (sh > 0.1) {
+                const k = 1 - AIR_DRAG * sh * SOLVE_STEP;
+                svx *= k;
+                svz *= k;
+            }
+            const nx = px + svx * SOLVE_STEP;
+            const nz = pz + svz * SOLVE_STEP;
             const ny = py + vy * SOLVE_STEP - 0.5 * AIR_GRAVITY * SOLVE_STEP * SOLVE_STEP;
             vy -= AIR_GRAVITY * SOLVE_STEP;
             t += SOLVE_STEP;
@@ -917,10 +964,13 @@ export class Rider {
         this.q.rotate(0, 1, 0);
         const tilt = angleBetween(this.q.rx, this.q.ry, this.q.rz, nx, ny, nz);
         const quality = judgeLanding(yawErr, tilt, impact);
+        if (this.log) console.log("land s " + this.s.toString() + " yaw " + (yawErr * RAD).toString() + " tilt " +
+            (tilt * RAD).toString() + " impact " + impact.toString() + " q " + quality.toString() + " air " + this.airTime.toString() +
+            " spin " + this.spinDeg.toString());
         this.lastLand = quality;
         if (quality != LAND_CRASH) game.events.push(EV_LAND, impact, <f32>quality);
         if (quality == LAND_CRASH) {
-            this.crash(false);
+            this.crash(CRASH_LANDING);
             return;
         }
         // the velocity onto the slope and the board's axis
@@ -936,8 +986,15 @@ export class Rider {
         const nose = this.q.rx * tx + this.q.ry * ty + this.q.rz * tz;
         // the nose trailing: riding switch
         this.switchStance = nose < 0;
-        let V = vg * Mathf.cos(yawErr);
-        if (quality == LAND_PERFECT) V += PERFECT_BOOST;
+        // (a hop of a few ticks keeps its speed: the snow's plane barely changed)
+        let V = (this.airTime < 0.2 ? Mathf.sqrt(this.vx * this.vx + this.vy * this.vy + this.vz * this.vz) : vg) * Mathf.cos(yawErr);
+        // (a hop of a few ticks, off a fold or an edge, is no landing to reward)
+        // (the boost does not pile up: not past PERFECT_BOOST_UPTO, where a
+        // run of perfect rollers would otherwise reach every jump too fast)
+        if (quality == LAND_PERFECT && this.airTime > 0.3) {
+            const boosted = V + PERFECT_BOOST;
+            V = boosted < PERFECT_BOOST_UPTO ? boosted : (V > PERFECT_BOOST_UPTO ? V : PERFECT_BOOST_UPTO);
+        }
         else if (quality == LAND_CLEAN) V *= 0.97;
         else V *= 0.7;
         if (V > SPEED_CAP) V = SPEED_CAP;
@@ -1104,7 +1161,7 @@ export class Rider {
             const into = -(this.vx * ux + this.vz * uz);
             const limit = o.rock ? CRASH_ROCK : CRASH_INTO;
             if (into > limit) {
-                this.crash(false);
+                this.crash(CRASH_OBSTACLE);
                 return;
             }
             // glancing off: pushed out, the part into it lost, the rest x 0.8
@@ -1126,7 +1183,11 @@ export class Rider {
 
     // ---- the crash and the respawn (section 9) ------------------------------------
 
-    crash(fall: bool): void {
+    crash(reason: i32): void {
+        this.lastCrash = reason;
+        if (this.log) console.log("crash " + reason.toString() + " s " + this.s.toString() + " x " + this.x.toString() +
+            " y " + this.y.toString() + " v " + Mathf.sqrt(this.vx * this.vx + this.vz * this.vz).toString() + " mode " +
+            this.mode.toString() + " high " + (this.highLine ? "1" : "0") + " spin " + this.spinDeg.toString() + " flip " + this.flipDeg.toString());
         const speed = Mathf.sqrt(this.vx * this.vx + this.vy * this.vy + this.vz * this.vz);
         this.crashSpeed = this.mode == MODE_GROUND ? this.V : Mathf.sqrt(this.vx * this.vx + this.vz * this.vz);
         this.tricks.lose(false, speed > 14);
@@ -1162,15 +1223,39 @@ export class Rider {
     // At the first safe metre at or after the crash's progress (+5 m),
     // facing down the line, at the larger of 8 m/s and half the speed.
     respawn(): void {
-        respawnAt(this.s, this.highLine, this.lp);
+        // a crash again near the last respawn: the next one further on, so
+        // that no place can hold the rider (+25 m each time)
+        let s = this.s;
+        if (this.lastRespawnS >= 0 && s < this.lastRespawnS + REPEAT_RANGE && s > this.lastRespawnS - REPEAT_RANGE) {
+            this.respawnBump += REPEAT_BUMP;
+        } else {
+            this.respawnBump = 0;
+        }
+        s = (s > this.lastRespawnS ? s : this.lastRespawnS) + this.respawnBump;
+        respawnAt(s, this.highLine, this.lp);
         const speed = this.crashSpeed * 0.5 > RESPAWN_MIN_SPEED ? this.crashSpeed * 0.5 : RESPAWN_MIN_SPEED;
         const keep = this.crashTime;
         this.placeOn(this.lp, speed);
-        this.lineIndex = <i32>Mathf.round(this.lp.s);
+        this.lastRespawnS = this.lp.s;
+        this.lineIndex = -1;
         this.crashTime = keep;
         this.respawned = true;
         this.blink = CONTROL_AT + BLINK_TIME - keep;
         game.events.push(EV_RESPAWN, this.s, 0);
+        if (this.log) console.log("respawn s " + this.s.toString() + " x " + this.x.toString() + " v " + this.V.toString() +
+            " high " + (this.highLine ? "1" : "0"));
+    }
+
+    // Stuck (no progress for a while, run.as decides): stood again further
+    // on, as after a crash but without one (nothing is lost).
+    rescue(): void {
+        this.crashSpeed = 2 * RESPAWN_MIN_SPEED;
+        this.crashTime = RESPAWN_AT;
+        if (this.s < this.bestS) this.s = this.bestS;
+        this.lastRespawnS = -1000;
+        this.respawnBump = 10;
+        this.mode = MODE_GROUND;
+        this.respawn();
     }
 
     // Whether the respawn's blink is on (its 1-bit transparency).
@@ -1192,19 +1277,26 @@ export class Rider {
             this.section = this.lp.section;
             game.events.push(EV_SECTION, <f32>this.section, 0);
         }
-        // the split: the line committed to a few metres past it
-        if (SPLIT_S > 0 && !this.lineCommitted && s > SPLIT_S + 5 && s < MERGE_S) {
-            this.lineCommitted = true;
-            this.highLine = isHighSide(this.x, this.z, s);
-            this.lineTaken = this.highLine ? 1 : 0;
-            game.events.push(EV_LINE, this.highLine ? 1 : 0, 0);
-            game.events.push(EV_GATE, <f32>SPLIT_S, 0);
-            this.lineIndex = -1;
+        // the split: the line the rider is nearer, followed all the way (the
+        // lines part slowly), committed to (the event) 25 m past the split
+        if (SPLIT_S > 0 && s > SPLIT_S && s < MERGE_S) {
+            const high = isHighSide(this.x, this.z, s);
+            if (high != this.highLine) {
+                this.highLine = high;
+                this.lineIndex = -1;
+            }
+            if (!this.lineCommitted && s > SPLIT_S + 25) {
+                this.lineCommitted = true;
+                this.lineTaken = high ? 1 : 0;
+                game.events.push(EV_LINE, high ? 1 : 0, 0);
+                game.events.push(EV_GATE, <f32>SPLIT_S, 0);
+            }
         }
         if (this.highLine && MERGE_S > 0 && s > MERGE_S) {
             this.highLine = false;
             this.lineIndex = -1;
         }
+        if (s > this.bestS) this.bestS = s;
     }
 
     finished(): bool {
