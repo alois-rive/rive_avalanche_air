@@ -44,7 +44,7 @@ import {
     PIN_TRICK_SEQ, PIN_TRICK_SPIN, PIN_TRICK_SWITCH, PIN_UI_BACK_SEQ, PIN_UI_MOVE_SEQ, PIN_UI_SELECT_SEQ,
     PIN_VOICE_VOLUME,
 } from "./pins_data";
-import { MODE_AIR, MODE_GRIND, MODE_TUMBLE, Rider } from "./rider";
+import { MODE_AIR, MODE_GRIND, MODE_TUMBLE, RESPAWN_AT, Rider } from "./rider";
 import { Tricks, insertRow, rankOf, seedTable } from "./tricks";
 
 const TICK: f32 = <f32>(1.0 / 120.0);
@@ -61,7 +61,9 @@ const INITIALS_DELAY: f32 = 1.2;
 const DEMO_LOOP: f32 = 30;
 const ATTRACT_MAX: f32 = 120;
 const RESTART_DEBOUNCE: i32 = 12;     // frames a key restart ignores the view model's echo
-const LETTERS: i32 = 38;              // 0 space, 1..26 A..Z, 27..36 0..9, 37 "!"
+const LETTERS: i32 = 38;
+const STUCK_TIME: f32 = 8;
+const PUSH_OFF: f32 = 5;              // m/s out of the start gate at GO            // seconds without 3 m of progress: stood again further on
 
 export class Run extends NodeScript {
     printEvery: i32 = 0;
@@ -97,6 +99,8 @@ export class Run extends NodeScript {
     private seenSelect: f32 = 0;
     private seenBack: f32 = 0;
     private keyRestartFrame: i32 = -100;
+    private stuckBest: f32 = 0;
+    private stuckTime: f32 = 0;
     // the results
     private resStep: i32 = 0;
     private resShown: StaticArray<f32> = new StaticArray<f32>(TALLY_LINES + 1);
@@ -160,6 +164,8 @@ export class Run extends NodeScript {
 
     override _process(delta: f32): void {
         if (!this.began) this.begin();
+        this.rider.log = this.printEvery > 0;
+        this.tricks.log = this.printEvery > 0;
         this.frame++;
         this.readSettings();
         this.commands();
@@ -302,6 +308,8 @@ export class Run extends NodeScript {
     private newRunState(seed: u32): void {
         game.seed = seed;
         game.time = 0;
+        this.stuckBest = 0;
+        this.stuckTime = 0;
         this.tricks.reset();
         this.rider.reset(<u64>seed);
         this.pilot.reset();
@@ -368,6 +376,7 @@ export class Run extends NodeScript {
         this.goTime = 0;
         game.events.push(EV_COUNT, 0);
         game.events.push(EV_GATE, 0);
+        if (this.rider.s < 1) this.rider.pushOff(PUSH_OFF);
         if (this.piloted) {
             const auto = <i32>this.num(PIN_AUTOPILOT);
             this.pilot.setup(auto != 1);
@@ -442,7 +451,19 @@ export class Run extends NodeScript {
         else this.controls.fill(this.inp, dt);
         const wasTumbling = r.mode == MODE_TUMBLE;
         r.tick(this.inp, dt);
-        if (wasTumbling && r.mode != MODE_TUMBLE) {
+        // never stuck: no progress for STUCK_TIME with control, stood again further on
+        if (r.bestS > this.stuckBest + 3) {
+            this.stuckBest = r.bestS;
+            this.stuckTime = 0;
+        } else if (r.hasControl()) {
+            this.stuckTime += dt;
+        }
+        if (this.stuckTime > STUCK_TIME && !r.finished()) {
+            this.stuckTime = 0;
+            r.rescue();
+            this.stuckBest = r.bestS;
+        }
+        if ((wasTumbling && r.mode != MODE_TUMBLE) || r.respawned && r.crashTime == RESPAWN_AT) {
             // the respawn: the cameras cut, the drawn pose snaps
             view.cut = true;
             this.drawn.set(r.x, r.y, r.z, r.q.x, r.q.y, r.q.z, r.q.w);
@@ -754,7 +775,8 @@ export class Run extends NodeScript {
         const r = this.rider;
         console.log("frame " + this.frame.toString() + " phase " + game.phase.toString() + " s " + r.s.toString() +
             " x " + r.x.toString() + " y " + r.y.toString() + " v " + r.V.toString() + " mode " + r.mode.toString() +
-            " score " + game.score.toString() + " land " + r.lastLand.toString() + " spin " + r.spinDeg.toString());
+            " score " + game.score.toString() + " land " + r.lastLand.toString() + " high " + (r.highLine ? "1" : "0") +
+            " t " + game.time.toString() + " brake " + (this.pilot.braking ? "1" : "0") + " target " + this.pilot.dbgTarget.toString() + " cross " + this.pilot.dbgCross.toString() + " steer " + this.inp.x.toString());
     }
 }
 

@@ -17,6 +17,7 @@ const CLIMB_MAX: f32 = 0.5;          // not climbing faster
 const ANGLE_MAX: f32 = 50 * DEG;     // the velocity within this of the curve (either way)
 const SNOW_REACH_UP: f32 = 1.1;      // from the snow, crouched: a top this far above the board
 const SNOW_START: f32 = 2.5;         // and within this of the curve's start (m)
+const AIR_START_BELOW: f32 = 0.6;   // in the air at its start, crouched: the board this far below the top
 const MIN_SPEED: f32 = 4;
 // the slide
 const MU_BOX: f32 = 0.06;
@@ -138,13 +139,19 @@ export class Grind {
             railPoint(r, i0 + 1, this.b);
             const topY = this.a.y + (this.b.y - this.a.y) * f;
             const dy = py - topY;
+            const fromStart = bestU * 0.25;
+            const fromEnd = (<f32>(count - 1) - bestU) * 0.25;
+            const atEnd = fromStart <= SNOW_START || fromEnd <= SNOW_START;
             if (onSnow) {
                 // crouched on the snow, approaching its start: popped up on it
                 if (dy < -SNOW_REACH_UP || dy > ABOVE) continue;
-                const fromStart = bestU * 0.25;
-                const fromEnd = (<f32>(count - 1) - bestU) * 0.25;
-                if (fromStart > SNOW_START && fromEnd > SNOW_START) continue;
-            } else if (dy < -BELOW || dy > ABOVE) continue;
+                if (!atEnd) continue;
+            } else {
+                // in the air: on its top; at its start a little below it too
+                // (off the top of its approach ramp, crouched for it)
+                const below = atEnd && crouched ? AIR_START_BELOW : BELOW;
+                if (dy < -below || dy > ABOVE) continue;
+            }
             let cx = this.b.x - this.a.x;
             let cy = this.b.y - this.a.y;
             let cz = this.b.z - this.a.z;

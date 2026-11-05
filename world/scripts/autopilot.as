@@ -29,6 +29,16 @@ const SPIN_RATE: f32 = 540;
 const FLIP_RATE: f32 = 420;
 const SPIN_COAST: f32 = 41;     // degrees a spin goes on after its release (0.15 s ramp)
 const FLIP_COAST: f32 = 32;
+const CRUISE: f32 = 18;          // between features
+const DESIGN_MARGIN: f32 = 2.5;  // under a jump's design speed (the grid's lips launch steeper than drawn)
+const RAIL_MARGIN: f32 = 1;
+const BRAKE_SWING: f32 = 0.6;    // s each way of a speed check
+const RAIL_TOO_FAST: f32 = 6;    // over a rail's design speed by this: not ridden
+const RAIL_SIDESTEP: f32 = 5;
+const KICKER_TOO_FAST: f32 = 3.5;
+const KICKER_SIDESTEP: f32 = 8;
+const ROLLER_FAST: f32 = 5;      // over the next jump's speed by this: no ollie off a roller    // under a jump's design speed (its lip launches a little steeper)
+const ROLLER_SPEED: f32 = 14;
 
 export class Autopilot {
     high: bool = true;
@@ -55,6 +65,14 @@ export class Autopilot {
     private grab: i32 = GRAB_NONE;
     private planned: bool = false;
     private weave: f32 = 0;
+    private weaveAmp: f32 = 0;
+    private side: i32 = 1;
+    private skipped: i32 = -1;
+    private brakeTime: f32 = 0;
+    braking: bool = false;
+    dbgTarget: f32 = 0;
+    dbgCross: f32 = 0;
+    private np: LinePoint = new LinePoint();
     private crouching: bool = false;
     private lp: LinePoint = new LinePoint();
     private rp: LinePoint = new LinePoint();
@@ -123,7 +141,7 @@ export class Autopilot {
             this.fspin[k] = REF_SPIN[row];
             this.fflip[k] = REF_FLIP[row];
             this.fgrab[k] = REF_GRAB[row];
-            this.fgrind[k] = REF_GRIND[row] != 0 || f.kind == FEAT_RAIL;
+            this.fgrind[k] = REF_GRIND[row] != 0;
             return;
         }
         const sign = this.alternate ? 1 : -1;
@@ -131,7 +149,8 @@ export class Autopilot {
             this.fspin[k] = 0;
             this.fflip[k] = 0;
             this.fgrab[k] = GRAB_NONE;
-            this.fgrind[k] = true;
+            // the garden's centre lane, a rail on its own elsewhere
+            this.fgrind[k] = Mathf.abs(f.x) < 3 || f.s < 640 || f.s > 900;
         } else if (f.kind == FEAT_ROLLER) {
             this.fspin[k] = 180 * sign;
             this.fflip[k] = 0;
@@ -158,11 +177,39 @@ export class Autopilot {
         this.lastMode = MODE_GROUND;
         this.crouching = false;
         this.weave = 0;
+        this.weaveAmp = 0;
     }
 
-    // The next feature not yet passed, from the rider's s.
+    // The next feature not yet passed, from the rider's s (a rail it does
+    // not grind, another lane's, is no target).
     private next(s: f32): i32 {
-        for (let i = 0; i < this.count; i++) if (this.fend[i] > s - 1) return i;
+        for (let i = 0; i < this.count; i++) {
+            if (this.fkind[i] == FEAT_RAIL && !this.fgrind[i]) continue;
+            if (this.fend[i] > s - 1) return i;
+        }
+        return -1;
+    }
+
+    // The first feature from i on that asks for a speed (a jump, a rail it
+    // grinds), or -1.
+    private nextPaced(i: i32): i32 {
+        for (let k = i; k < this.count; k++) {
+            if (this.fspeed[k] <= 0) continue;
+            if (this.fkind[k] == FEAT_RAIL && !this.fgrind[k]) continue;
+            return k;
+        }
+        return -1;
+    }
+
+    // A rail not ridden, on the way (within 3 m of the line's offset) in the
+    // next 40 m, or -1.
+    private railInTheWay(s: f32): i32 {
+        for (let k = 0; k < this.count; k++) {
+            if (this.fkind[k] != FEAT_RAIL || this.fgrind[k]) continue;
+            const d = this.fs[k] - s;
+            if (d > 40 || this.fend[k] < s - 1) continue;
+            if (Mathf.abs(this.fx[k]) < 3) return k;
+        }
         return -1;
     }
 
@@ -206,17 +253,43 @@ export class Autopilot {
         lineSample(ahead, this.high, this.lp);
         const p = this.lp;
         let offset: f32 = 0;
-        let target: f32 = 22;
+        let target: f32 = CRUISE;
         let tx = p.x;
         let tz = p.z;
         let crouch = false;
         let release = false;
+        let near = false;
+        let d: f32 = 1e9;
         if (i >= 0) {
-            const d = this.fs[i] - s;
-            if (d < 60) offset = this.fx[i];
-            if (d < 140) target = this.fspeed[i] > 0 ? this.fspeed[i] : target;
+            d = this.fs[i] - s;
             const kind = this.fkind[i];
-            if (kind == FEAT_RAIL && this.fgrind[i] && this.frail[i] >= 0 && d < 30) {
+            // lined up on it from 70 m, straight for the last 25 m
+            if (d < 70) offset = this.fx[i] * clampf((70 - d) / 45, 0, 1);
+            // the speed: the next jump's or rail's design speed (a roller takes
+            // what comes; a drop is easy), from 180 m before it
+            const j = this.nextPaced(i);
+            if (j >= 0 && this.fs[j] - s < 180) {
+                const kj = this.fkind[j];
+                // (a gap and the mega-jump need their full speed: short lands on a roof, a knuckle)
+                target = this.fspeed[j] - (kj == FEAT_MEGA || kj == FEAT_GAP ? 0 : (kj == FEAT_RAIL ? RAIL_MARGIN : DESIGN_MARGIN));
+                const dj = this.fs[j] - s;
+                // the carving stops 12 m before it, 8 m before a roller in between
+                near = dj < 12 || (kind == FEAT_ROLLER && d < 8);
+            } else {
+                near = kind == FEAT_ROLLER && d < 8;
+            }
+            // a rail of the line it does not ride (the garden's centre lane
+            // before the lane it takes): passed beside it, off its approach ramp
+            const pass = this.railInTheWay(s);
+            if (pass >= 0) offset = this.fx[pass] + (this.fx[pass] > 0 ? -RAIL_SIDESTEP : RAIL_SIDESTEP);
+            const tooFast = this.skipped == i || (kind == FEAT_RAIL && r.V > this.fspeed[i] + RAIL_TOO_FAST) ||
+                (kind == FEAT_KICKER && this.fspeed[i] > 0 && r.V > this.fspeed[i] + KICKER_TOO_FAST && d < 30);
+            if (tooFast && d < 40) {
+                // too fast for it: beside it, not over it (a crash costs more than a trick)
+                const step = kind == FEAT_RAIL ? RAIL_SIDESTEP : KICKER_SIDESTEP;
+                offset = this.fx[i] + (this.fx[i] > 0 ? -step : step);
+                this.skipped = i;
+            } else if (kind == FEAT_RAIL && this.fgrind[i] && this.frail[i] >= 0 && d < 45) {
                 // the rail's own line, from its start
                 railPoint(this.frail[i], 0, this.rp);
                 const sx = this.rp.x;
@@ -238,19 +311,17 @@ export class Autopilot {
                 tz = sz + dz * at;
                 offset = 0;
                 if (d < 3.5 && d > -2) crouch = true;
-            } else if (kind == FEAT_ROLLER) {
+            } else if (kind == FEAT_ROLLER && r.V < target + ROLLER_FAST) {
+                // (much too fast: ridden over on the snow, carving speed off)
                 if (d < 5 && d > 0.3) crouch = true;
                 if (d <= 0.3 && d > -2) release = true;
-            } else if (kind == FEAT_KICKER || kind == FEAT_MEGA || kind == FEAT_GAP || kind == FEAT_DROP) {
-                if (d < 5 && d > -1) crouch = !r.onLip && d > 0.15;
-                if (r.onLip || (d <= 0.15 && d > -1)) release = true;
             }
+            // (a kicker, a gap, the mega-jump and a drop are ridden off as they
+            // come, at their design speed: every jump works without an ollie,
+            // and a pop on top of the design flight overshoots its landing)
         }
-        // too fast: a weave to scrub speed; too slow: a tuck
         const v = r.V;
-        if (v > target + 2 && !crouch) this.weave += dt * 1.6;
-        else this.weave *= 1 - dt;
-        const weave = v > target + 2 ? Mathf.sin(this.weave * 2.2) * clampf((v - target - 2) * 1.5, 0, 5) : <f32>0;
+        const weave: f32 = 0;
         // right of the line
         const rx = -p.tz;
         const rz = p.tx;
@@ -259,12 +330,38 @@ export class Autopilot {
             tx += rx / rl * (offset + weave);
             tz += rz / rl * (offset + weave);
         }
-        const want = Mathf.atan2(-(tx - r.x), -(tz - r.z));
-        // against the travel (the board leads it in a carve), and its turning
-        const err = wrapAngle(want - r.psi);
-        const lag = wrapAngle(r.heading - r.psi);
-        out.x = clampf(-err * 2.0 + lag * 1.5, -1, 1);
-        out.tuck = !crouch && v < target - 0.5;
+        let want = Mathf.atan2(-(tx - r.x), -(tz - r.z));
+        // too fast, and room before the next feature: carving wide across the
+        // slope (no brake: RIDER.md section 3), turning back at the piste's
+        // sides; lined up again for the last 25 m
+        const demand = v - target;
+        lineSample(this.hint, this.high, this.np);
+        const n = this.np;
+        const nrx = -n.tz;
+        const nrz = n.tx;
+        const nl = Mathf.sqrt(nrx * nrx + nrz * nrz);
+        const cross = nl > 1e-4 ? ((r.x - n.x) * nrx + (r.z - n.z) * nrz) / nl : <f32>0;
+        const brake = demand > 0.8 && !near && !crouch && Mathf.abs(cross - offset) < 8;
+        this.dbgTarget = target;
+        this.dbgCross = cross;
+        if (brake) {
+            // carving hard, one way then the other, round the way it wants to
+            // go: every tick at full lock costs speed (RIDER.md section 3: no
+            // brake, carving slows), and the swings skid a little more
+            const e = wrapAngle(r.heading - want);
+            const phi = clampf(demand * 0.08, 0.2, 0.4);
+            if (this.side > 0 && e < -phi) this.side = -1;
+            else if (this.side < 0 && e > phi) this.side = 1;
+            out.x = <f32>this.side;
+        } else {
+            this.brakeTime = 0;
+            // against the travel (the board leads it in a carve), and its turning
+            const err = wrapAngle(want - r.psi);
+            const lag = wrapAngle(r.heading - r.psi);
+            out.x = clampf(-err * 2.0 + lag * 1.5, -1, 1);
+        }
+        out.tuck = !crouch && v < target - 0.3 && d > 4;
+        this.braking = brake;
         if (crouch && !release) {
             out.crouch = true;
             this.crouching = true;
@@ -287,7 +384,7 @@ export class Autopilot {
         const k: f32 = T > 0.55 && this.fgrab[i] != GRAB_NONE ? 0.85 : 1;
         if (want != 0) {
             // what fits, with a margin: the solved flight is a forecast
-            const reach = SPIN_RATE * k * (T - 0.45) + SPIN_COAST * k;
+            const reach = SPIN_RATE * k * (T - 0.3) + SPIN_COAST * k;
             let halves = Mathf.floor(reach / 180);
             const wantHalves = Mathf.abs(want) / 180;
             if (halves > wantHalves) halves = wantHalves;
@@ -296,15 +393,43 @@ export class Autopilot {
         const flip = <f32>this.fflip[i];
         if (flip != 0) {
             const reach = FLIP_RATE * k * (T - 0.45) + FLIP_COAST * k;
-            if (reach >= 360) this.flipTarget = flip > 0 ? 360 : -360;
+            if (reach >= 430) this.flipTarget = flip > 0 ? 360 : -360;
         }
         if (T > 0.55) this.grab = this.fgrab[i];
     }
 
     private air(r: Rider, out: Input): void {
+        // crouched over a rail's start: caught off its approach
+        const ri = this.index;
+        if (ri >= 0 && ri < this.count && this.fkind[ri] == FEAT_RAIL && this.fgrind[ri]) {
+            const dr = this.fs[ri] - r.s;
+            if (dr < 4 && dr > -3) out.crouch = true;
+        }
         if (!this.planned) return;
+        // the flight's forecast shortened: a spin cut to the half-turn it can reach
+        if (this.spinTarget != 0) {
+            const k: f32 = r.grab != GRAB_NONE ? 0.85 : 1;
+            const rate = Mathf.abs(r.spinRate);
+            const left = r.landT - 0.2;
+            const reach = Mathf.abs(r.spinDeg) + rate * rate / (2 * SPIN_RATE / 0.15) +
+                (left > 0 ? SPIN_RATE * k * left : <f32>0);
+            const most = Mathf.floor(reach / 180) * 180;
+            const least = Mathf.ceil((Mathf.abs(r.spinDeg) + rate * rate / (2 * SPIN_RATE / 0.15) - 20) / 180) * 180;
+            let cap = most > least ? most : least;
+            if (Mathf.abs(this.spinTarget) > cap) this.spinTarget = cap * (this.spinTarget > 0 ? 1 : -1);
+        }
         // released when what the rate still turns, ramping down, reaches the target
         const spin = this.spinTarget;
+        if (spin == 0 || Mathf.abs(r.spinDeg) >= Mathf.abs(spin) - 1) {
+            // the board's axis (either way) to the travel, for the landing
+            const by = r.boardYaw();
+            const ty = Mathf.atan2(-r.vx, -r.vz);
+            let e = wrapAngle(by - ty);
+            if (e > 1.5707963) e -= 3.1415927;
+            if (e < -1.5707963) e += 3.1415927;
+            const deg = e * 57.29578;
+            if (Mathf.abs(deg) > 8 && r.landT > 0.12) out.x = clampf(deg / 20, -1, 1);
+        }
         const sr = r.spinRate;
         const spinCoast = sr * sr / (2 * SPIN_RATE / 0.15) + 2;
         if (spin != 0 && Mathf.abs(spin) - Mathf.abs(r.spinDeg) > spinCoast) out.x = spin > 0 ? -1 : 1;
