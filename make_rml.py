@@ -122,7 +122,7 @@ PAUSE_ITEMS = [
 ]
 
 # The pause menu's controls card: (action, mapping) per device (docs/SPEC.md, section 3)
-CONTROLS_KEYS = [("STEER", "A D"), ("TUCK", "S"), ("OLLIE", "SPACE"), ("GRABS", "J K L J+K"),
+CONTROLS_KEYS = [("STEER", "A D"), ("TUCK", "S"), ("OLLIE", "SPACE / E"), ("GRABS", "J K L J+K"),
                  ("SPIN", "LEFT RIGHT"), ("FLIP", "UP DOWN"), ("RESTART", "R"), ("PAUSE", "ESC"),
                  ("MENUS", "ARROWS ENTER")]
 CONTROLS_PAD = [("STEER", "L-STICK"), ("TUCK", "STICK DOWN"), ("OLLIE", "A"), ("GRABS", "X B Y X+B"),

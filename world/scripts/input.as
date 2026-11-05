@@ -10,6 +10,7 @@ import { InputEvent, InputKind } from "hedra_engine/script";
 import { clampf } from "./lib/kinematic";
 
 export const KEY_SPACE: i32 = 32;
+export const KEY_E: i32 = 69;     // the ollie's second key, beside Space
 export const KEY_0: i32 = 48;
 export const KEY_9: i32 = 57;
 export const KEY_A: i32 = 65;
@@ -56,7 +57,7 @@ const K_ARIGHT: i32 = 8;     // Right arrow
 const K_UP: i32 = 16;        // Up arrow
 const K_DOWN: i32 = 32;      // Down arrow
 const K_TUCK: i32 = 64;      // S
-const K_CROUCH: i32 = 128;   // Space
+const K_CROUCH: i32 = 128;   // Space or E
 const K_INDY: i32 = 256;     // J
 const K_MELON: i32 = 512;    // K
 const K_METHOD: i32 = 1024;  // L
@@ -137,7 +138,7 @@ export class Controls {
                 this.restartPressed = true;
                 used = true;
             }
-            if (key == KEY_SPACE) this.crouchTap = true;
+            if (key == KEY_SPACE || key == KEY_E) this.crouchTap = true;
             if (key == KEY_ENTER || key == KEY_KP_ENTER || key == KEY_SPACE) {
                 this.confirmPressed = true;
                 used = true;
@@ -174,7 +175,7 @@ export class Controls {
         if (key == KEY_W) return K_W;
         if (key == KEY_DOWN) return K_DOWN;
         if (key == KEY_S) return K_TUCK;
-        if (key == KEY_SPACE) return K_CROUCH;
+        if (key == KEY_SPACE || key == KEY_E) return K_CROUCH;
         if (key == KEY_J) return K_INDY;
         if (key == KEY_K) return K_MELON;
         if (key == KEY_L) return K_METHOD;

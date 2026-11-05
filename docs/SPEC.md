@@ -87,12 +87,12 @@ The brief's mapping, resolved where it was open (marked *).
 |---|---|---|
 | Steer, carve | left stick X | A / D |
 | Tuck (speed up) | left stick down (below -0.5) | S |
-| Crouch, release to ollie | south (A), hold then release | Space |
+| Crouch, release to ollie | south (A), hold then release | Space or E |
 | Grabs (in the air) | west (X) Indy, east (B) Melon, north (Y) Method, west + east together Mute * | J Indy, K Melon, L Method, J + K Mute * |
 | Spins (in the air) | left stick X | Left / Right arrows |
 | Flips (in the air) | left stick Y: up front flip, down back flip | Up / Down arrows |
 | Grind balance | left stick X | A / D or Left / Right |
-| Jump off a rail | south (A) | Space |
+| Jump off a rail | south (A) | Space or E |
 | Restart run | Start | R |
 | Pause * | Select / Back | Escape |
 | Menus | d-pad or left stick, south to confirm, east to go back | arrows, Enter, Escape |

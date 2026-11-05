@@ -11945,7 +11945,7 @@
                                     <SolidColor colorValue="FFFFFFFF" name="Color"/>
                                 </Fill>
                             </TextStylePaint>
-                            <TextValueRun styleId="41:1131" text="SPACE" name="Run"/>
+                            <TextValueRun styleId="41:1131" text="SPACE / E" name="Run"/>
                         </Text>
                         <Text x="1" y="1" originX="1" originY="0" sizingValue="autoWidth" alignValue="right" name="Mapping Ollie Shadow">
                             <TextStylePaint fontSize="8" lineHeight="8" fontAssetId="41:229" name="Style" id="41:1132">
@@ -11956,7 +11956,7 @@
                                     <SolidColor colorValue="FF000000" name="Color"/>
                                 </Fill>
                             </TextStylePaint>
-                            <TextValueRun styleId="41:1132" text="SPACE" name="Run"/>
+                            <TextValueRun styleId="41:1132" text="SPACE / E" name="Run"/>
                         </Text>
                     </Node>
                     <Node x="70" y="91" name="Control Grabs" id="41:1133">
