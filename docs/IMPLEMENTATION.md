@@ -27,7 +27,7 @@ world/scripts/camera.as        PLACEHOLDER chase camera (on LowRes/Lens)        
 world/scripts/sound.as         PLACEHOLDER (on the Sound node)                       [AUDIO]
 ```
 
-Verified end to end (hedra 0.1.0, rive dev-97a754c8): the bake succeeds,
+Verified end to end (hedra 0.1.0, rive dev-8d3a7cc3): the bake succeeds,
 the frame passes `psx_audit.py frame`, the world writes a pin that
 `--data-dump` reads (`data/speedKmh`), and a world script can start a
 Rive `AudioProcessor` (`Audio.start` from a NodeScript; `--render-audio`
@@ -96,7 +96,7 @@ course's scene or in `make_run.py`.
 ## 4. Building and checking
 
 ```sh
-export RIVE_VERSION=dev-97a754c8      # the pinned rive (tools/pins.env of the Hedra repo)
+export RIVE_VERSION=dev-8d3a7cc3      # the pinned rive (tools/pins.env of the Hedra repo)
 python3 tools/make_run.py && python3 make_rml.py
 hedra build world                     # builds the scenes, vendors hedra_engine
 rive . --unsigned-riv                 # bakes build/avalanche.riv (about 40 s); errors in build/problems.log
@@ -113,7 +113,7 @@ python3 .claude/skills/psx-style/scripts/psx_audit.py frame build/shot.png
 Python with Pillow and NumPy:
 `/private/tmp/claude-501/-Users-alois-Documents-Github-rive-avalanche-air/559e292b-11d3-41df-816c-cf85b455a16d/scratchpad/venv/bin/python`.
 
-Rive's own docs: `RIVE_VERSION=dev-97a754c8 rive docs <topic>`
+Rive's own docs: `RIVE_VERSION=dev-8d3a7cc3 rive docs <topic>`
 (`animascript/protocols`, `animascript/threading`, `animascript/api/audio`,
 `data`, `state-machines`, `layout`, `text`, `focus`, `workflow`). Hedra's:
 `~/Documents/GitHub/rive_modeler/docs/` (engine/, formats/RSCN.md,

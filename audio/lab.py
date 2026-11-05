@@ -106,7 +106,7 @@ def main():
         for f in os.listdir(src):
             if f.endswith("_test.as"):
                 shutil.copy(os.path.join(src, f), os.path.join(LAB, "scripts", "audio", f))
-        env = dict(os.environ, RIVE_VERSION=os.environ.get("RIVE_VERSION", "dev-97a754c8"))
+        env = dict(os.environ, RIVE_VERSION=os.environ.get("RIVE_VERSION", "dev-8d3a7cc3"))
         p = subprocess.run(["rive", LAB, "--test"], env=env, capture_output=True, text=True)
         out = p.stdout + p.stderr
         with open(os.path.join(LAB, "test.log"), "w") as f:
@@ -126,7 +126,7 @@ def main():
     os.makedirs(LAB, exist_ok=True)
     sync(mode, first, last)
     wav = os.path.join(LAB, what + ".wav")
-    env = dict(os.environ, RIVE_VERSION=os.environ.get("RIVE_VERSION", "dev-97a754c8"))
+    env = dict(os.environ, RIVE_VERSION=os.environ.get("RIVE_VERSION", "dev-8d3a7cc3"))
     cmd = ["rive", LAB, "--render-audio=" + wav, "--advance=%ss" % secs]
     t0 = time.time()
     p = subprocess.run(cmd, env=env, capture_output=True, text=True)

@@ -110,7 +110,7 @@ def main():
         return
     os.makedirs(os.path.join(ROOT, OUT), exist_ok=True)
     env = dict(os.environ)
-    env.setdefault("RIVE_VERSION", "dev-97a754c8")
+    env.setdefault("RIVE_VERSION", "dev-8d3a7cc3")
     for name, args in SHOTS:
         if want and name not in want:
             continue

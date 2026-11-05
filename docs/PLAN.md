@@ -5,7 +5,7 @@ looked at, each ending in checks that are commands (TESTS.md) and, where
 assets or sound are delivered, the person's approval. Efforts are working
 days of one agent with the Hedra and Rive tools, tests and documents
 included. The toolchain is the Hedra repository's pin (`rive_modeler/tools/pins.env`:
-rive `dev-97a754c8`, which box3d-as needs); the project's `rive.yaml`
+rive `dev-8d3a7cc3`, which box3d-as needs); the project's `rive.yaml`
 follows the kart's (`scripting: wasm`, `wasmRuntime: frame`,
 `wasmMaxPages: 65536`, the shader outputs, `exclude:` for the build, the
 assets, the tools and `world/psx`).

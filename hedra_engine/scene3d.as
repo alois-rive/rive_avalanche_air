@@ -109,6 +109,16 @@
 // advance, or several under the load budget), from the blobs the Rive
 // project's hedra_engine.rml and hedra.built.rml declare. Without a bound
 // view model the defaults apply (the main scene, auto, the label on).
+//
+// When the host drops the component (its artboard disposed or made again,
+// a file reloaded: Rive's Protocol.dispose), it disposes its view: the
+// instance shown and a load in progress, so that what they alone held is
+// freed (docs/engine/RESOURCES.md, "Lifetimes"). Without it each artboard
+// made again left the last instance's resources and GPU objects held for
+// the module's life (rive's warning: "script leaked N host handles").
+// What the free retires to the GPU ledger is released at once when no
+// other Scene3D of the module is live (none can have recorded it this
+// frame), else at the next advance of one that is, as always.
 
 import { Context, Layout } from "rive/host";
 import { Artboard } from "rive/artboard";
@@ -120,6 +130,7 @@ import { SceneRuntime } from "./scene/runtime/scene_runtime";
 import { newSceneRuntime } from "./scene";
 import { installLaneExecutor } from "./base/jobs";
 import { LaneExecutor } from "./render/lanes";
+import { gpuLedger } from "./render/gpu/ledger";
 
 // The frame's jobs on Rive's script threads (render/lanes.as): every built
 // Rive project has the component, so the lane executor is every job's
@@ -129,6 +140,14 @@ installLaneExecutor(new LaneExecutor());
 
 // The number of artboard inputs (artboard_0 to artboard_7).
 export const SCENE3D_ARTBOARD_INPUTS: i32 = 8;
+
+// How many Scene3D components of the module are live: entered (their init
+// ran) and not yet disposed.
+let liveComponents: i32 = 0;
+
+export function liveScene3Ds(): i32 {
+    return liveComponents;
+}
 
 // Each scene's runtime (Scene3DView's factory).
 function makeRuntime(): SceneRuntime {
@@ -145,9 +164,30 @@ export class Scene3D extends Layout {
     @input("artboard_6") artboard6: Artboard? = null;
     @input("artboard_7") artboard7: Artboard? = null;
     view: Scene3DView = new Scene3DView();
+    private live: bool = false;
 
     override init(context: Context): bool {
+        this.enter();
         return this.view.initLoading(context, makeRuntime);
+    }
+
+    // Counts the component among the module's live ones (init's; tests
+    // that drive a view without a host call it themselves).
+    enter(): void {
+        if (this.live) return;
+        this.live = true;
+        liveComponents++;
+    }
+
+    // The host drops the component (see the header): the view disposed,
+    // and the ledger's retired objects released when it was the last live.
+    override dispose(): void {
+        this.view.dispose();
+        if (this.live) {
+            this.live = false;
+            liveComponents--;
+        }
+        if (liveComponents == 0) gpuLedger().flushRetired();
     }
 
     override advance(seconds: f64): bool {
