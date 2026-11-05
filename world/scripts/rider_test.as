@@ -53,18 +53,18 @@ export class RiderTests extends Tests {
             expect.that(Mathf.abs(yawRateDeg(4, 1) - 72)).lessThan(0.01);
         });
 
-        test("the ollie pops 3 m/s on a tap and 5 m/s fully charged: 0.35 and 0.96 m on the flat", (expect) => {
-            expect.that(popSpeed(0)).is(3);
-            expect.that(popSpeed(0.2)).is(4);
-            expect.that(popSpeed(0.4)).is(5);
-            expect.that(popSpeed(1.0)).is(5);
+        test("the ollie pops 3.8 m/s on a tap and 6.2 m/s fully charged: 0.56 and 1.48 m on the flat", (expect) => {
+            expect.that(Mathf.abs(popSpeed(0) - 3.8)).lessThan(0.001);
+            expect.that(Mathf.abs(popSpeed(0.2) - 5.0)).lessThan(0.001);
+            expect.that(Mathf.abs(popSpeed(0.4) - 6.2)).lessThan(0.001);
+            expect.that(Mathf.abs(popSpeed(1.0) - 6.2)).lessThan(0.001);
             const tap = popSpeed(0);
             const full = popSpeed(0.4);
             // apex v^2 / 2g at the air's gravity, 13 m/s^2
-            expect.that(Mathf.abs(tap * tap / (2 * AIR_GRAVITY) - 0.346)).lessThan(0.01);
-            expect.that(Mathf.abs(full * full / (2 * AIR_GRAVITY) - 0.962)).lessThan(0.01);
-            // and the air it gives on the flat: 0.46 s and 0.77 s
-            expect.that(Mathf.abs(2 * full / AIR_GRAVITY - 0.769)).lessThan(0.01);
+            expect.that(Mathf.abs(tap * tap / (2 * AIR_GRAVITY) - 0.555)).lessThan(0.01);
+            expect.that(Mathf.abs(full * full / (2 * AIR_GRAVITY) - 1.478)).lessThan(0.01);
+            // and the air it gives on the flat: 0.58 s and 0.95 s
+            expect.that(Mathf.abs(2 * full / AIR_GRAVITY - 0.954)).lessThan(0.01);
         });
 
         test("landings are judged by RIDER.md's table, the impact lowering them", (expect) => {

@@ -406,6 +406,7 @@ class Conv:
                                     f_val(5))
         self.progress = doc.conv_range(0, 1, 0, 200)
         self.balance = doc.conv_range(-1, 1, -22, 22)
+        self.pop = doc.conv_range(0, 1, 0, 46)
         self.pause_y = doc.formula("Pause row y", f_in(), f_op("*"), f_val(PAUSE_STEP))
         self.caret_x = doc.formula("Caret x", f_in(), f_op("*"), f_val(48))
         self.rank_y = doc.formula("Rank row y", f_in(), f_op("*"), f_val(10))
@@ -497,6 +498,22 @@ def hud_board(c, m, cv):
                  sem=semantics("text", "Balance", value=d("balance"), value_conv=cv.d2, isHidden=True)))
     doc.link_sem(bal_id, c.last_sem)
 
+    # --- the ollie's pop meter under the rider (where the balance meter sits:
+    # never at once, a grind shows the balance), filling with the crouch's
+    # charge, acid green when full
+    pop_id, pop_fill_c = doc.ids(), doc.ids()
+    pop = El("Node", {"opacity": 0, "name": "Pop", "id": pop_id},
+             bind(u("balX"), 13), bind(u("balY"), 14))
+    # (above the rider's head: the balance meter's anchor less 44 grid pixels;
+    # the fill first, drawn over the bar)
+    pop.add(El("Shape", {"x": -23, "y": -44, "name": "Pop Fill", "id": doc.ids()},
+               rect(0, 4, 0, 0.5, bind_w=(d("ollieCharge"), 20, cv.pop)),
+               El("Fill", {"name": "Fill"}, El("SolidColor", {"colorValue": ORANGE, "name": "C", "id": pop_fill_c}))),
+            shape(c, "Pop Bar", rect(48, 6, 0.5, 0.5), fill=BLACK, stroke=WHITE, sw=1, y=-44),
+            text(c, "Pop Label", "POP", PIX, 8, 0, -58, 0.5, 0, color=ORANGE,
+                 sem=semantics("text", "Ollie charge", value=d("ollieCharge"), value_conv=cv.d2, isHidden=True)))
+    doc.link_sem(pop_id, c.last_sem)
+
     # --- the top row: score (8, 8), timer (160, 8), combo multiplier (312, 8)
     score = node(c, "Score")
     score.add(text(c, "Score Label", "SCORE", PIX, 8, 8, 8, color=CYAN),
@@ -543,7 +560,7 @@ def hud_board(c, m, cv):
     for nm, (x, y, w, h) in (("Score", (4, 5, 104, 32)), ("Time", (112, 5, 100, 32)), ("Combo", (252, 5, 64, 36)),
                              ("Banner", (6, 72, 308, 34)), ("Praise", (60, 104, 200, 38)), ("Strip", (56, 222, 208, 12))):
         plates.add(shape(c, "Plate " + nm, slant(x, y, w, h, 4), fill="D0000000"))
-    b.add(flash, perfect, *cd_nodes, targets, banner, praise, combo_sum, bal, score, timer, mult, prog, plates)
+    b.add(flash, perfect, *cd_nodes, targets, banner, praise, combo_sum, bal, pop, score, timer, mult, prog, plates)
 
     # ---- machine: the layers of docs/RIVE.md, section 3 ("Hud")
     motion_on = when(rm, "boolean", value=False)
@@ -667,6 +684,19 @@ def hud_board(c, m, cv):
     n_ok.to(n_bad, when(d("balance"), "number", "lessThan", -0.7))
     n_bad.to(n_ok, when(d("balance"), "number", "lessThanOrEqual", 0.7),
              when(d("balance"), "number", "greaterThanOrEqual", -0.7))
+
+    # Pop: shown while the ollie's crouch charges (and no grind); full in acid green
+    lay = sm.layer("Pop")
+    p_off = lay.state("Hidden", b.pose("Pop Hidden", [(pop_id, "opacity", "double", 0)]))
+    p_on = lay.state("Shown", b.pose("Pop Shown", [(pop_id, "opacity", "double", 1)]))
+    p_off.to(p_on, when(d("ollieCharge"), "number", "greaterThan", 0.02), when(d("grinding"), "boolean", value=False))
+    p_on.to(p_off, when(d("ollieCharge"), "number", "lessThanOrEqual", 0.02))
+    p_on.to(p_off, when(d("grinding"), "boolean", value=True))
+    lay = sm.layer("Pop Fill")
+    pf_part = lay.state("Loading", b.pose("Pop Loading", [(pop_fill_c, "colorValue", "color", ORANGE)]))
+    pf_full = lay.state("Full", b.pose("Pop Full", [(pop_fill_c, "colorValue", "color", GREEN)]))
+    pf_part.to(pf_full, when(d("ollieCharge"), "number", "greaterThanOrEqual", 0.99))
+    pf_full.to(pf_part, when(d("ollieCharge"), "number", "lessThan", 0.99))
 
     # Countdown: 3, 2, 1 slam on their beat; GO! in acid green, held then out; READY for a quick start
     lay = sm.layer("Countdown")

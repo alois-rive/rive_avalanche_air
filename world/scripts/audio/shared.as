@@ -46,6 +46,7 @@ export const CUE_MUSIC_CRASH: i32 = 22; // the crash duck
 export const CUE_START: i32 = 23;       // the title's Start
 export const CUE_SHUT_UP: i32 = 24;     // the announcer stops and forgets its queue
 export const CUE_TEST: i32 = 25;        // a: instrument id (tests and the review bank), b: note, c: velocity
+export const CUE_OLLIE_READY: i32 = 26; // the ollie's crouch fully loaded
 
 // ---- the announcer's lines (the captions' ids: RIVE.md, section 5) -----------
 export const LINE_THREE: i32 = 0;

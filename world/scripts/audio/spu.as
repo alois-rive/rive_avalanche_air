@@ -16,12 +16,12 @@ import { Music } from "./sequencer";
 import { Reverb } from "./reverb";
 import { Speech } from "./formant";
 import {
-    countBeep, gradeStamp, restartWhoosh, sfxBail, sfxConfettiPops, sfxCrash, sfxGate, sfxGrab, sfxGrindEnd,
+    countBeep, gradeStamp, restartWhoosh, sfxBail, sfxConfettiPops, sfxCrash, sfxGate, sfxGrab, sfxGrindEnd, sfxOllieReady,
     sfxGrindStart, sfxLand, sfxOllie, sfxPerfect, sfxSpin, startJingle, tallyEnd, tallyTick, uiBack, uiMove, uiSelect,
 } from "./sfx";
 import {
     CUE_BAIL, CUE_CHEER, CUE_CONFETTI, CUE_COUNT, CUE_CRASH, CUE_GATE, CUE_GRAB, CUE_GRADE, CUE_GRIND_END,
-    CUE_GRIND_START, CUE_LAND, CUE_MUSIC_CRASH, CUE_OLLIE, CUE_PERFECT, CUE_RESTART, CUE_SAY, CUE_SHUT_UP, CUE_SPIN,
+    CUE_GRIND_START, CUE_LAND, CUE_MUSIC_CRASH, CUE_OLLIE, CUE_OLLIE_READY, CUE_PERFECT, CUE_RESTART, CUE_SAY, CUE_SHUT_UP, CUE_SPIN,
     CUE_START, CUE_TALLY_END, CUE_TALLY_TICK, CUE_TEST, CUE_UI_BACK, CUE_UI_MOVE, CUE_UI_SELECT, Cue, Knobs, Meter,
     SpuInputs,
 } from "./shared";
@@ -141,6 +141,7 @@ export class Spu extends AudioProcessor<SpuInputs> {
         else if (k == CUE_GRIND_END) sfxGrindEnd(p);
         else if (k == CUE_SPIN) sfxSpin(p, c.a, c.b > 0.5);
         else if (k == CUE_GRAB) sfxGrab(p);
+        else if (k == CUE_OLLIE_READY) sfxOllieReady(p);
         else if (k == CUE_SAY) {
             const b = <i32>c.b;
             this.speech.say(<i32>c.a, b % 10, c.c, c.d, b >= 10);

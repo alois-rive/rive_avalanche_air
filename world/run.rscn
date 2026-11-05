@@ -300,6 +300,9 @@
   <node name="GhostDelta" type="Node3D" parent="Pins">
     <binding property="position:x" path="ghostDelta" mode="to_source"/>
   </node>
+  <node name="OllieCharge" type="Node3D" parent="Pins">
+    <binding property="position:x" path="ollieCharge" mode="to_source"/>
+  </node>
   <node name="StartSeq" type="Node3D" parent="Pins/In">
     <binding property="position:x" path="startSeq"/>
   </node>

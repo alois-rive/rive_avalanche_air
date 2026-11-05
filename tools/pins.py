@@ -74,6 +74,7 @@ PINS = [
     ("beat", "number", "out", "the music's beat counter"),
     ("device", "number", "out", "0 keyboard, 1 pad: the last used"),
     ("ghostDelta", "number", "out", "seconds ahead (-) or behind (+) the ghost"),
+    ("ollieCharge", "number", "out", "0..1 while crouched for an ollie: the HUD's pop meter"),
     # written by engine outputs on LowRes/RiderAnchor (screen_position), not by a pin node
     ("riderX", "number", "output", "the rider's screen position x (points of the Scene3D)"),
     ("riderY", "number", "output", "the rider's screen position y"),

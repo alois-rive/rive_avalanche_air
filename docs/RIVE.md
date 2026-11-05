@@ -152,6 +152,7 @@ pixel font, the trick names in the display face.
 | Praise | centre, y 104 to 124 | "SICK!" |
 | Combo sum | under the praise, y 128 | "2,450 x 3" while active |
 | Balance meter | under the rider | a 48 x 6 bar with a needle |
+| Pop meter | over the rider's head, while crouching for an ollie (not on a rail) | a 48 x 6 bar filling with `ollieCharge`, orange, acid green when full, "POP" over it |
 | Progress strip | bottom, y 228, 200 px wide, centred | the course's seven sections as segments, a dot for the rider |
 | Countdown | centre | 3, 2, 1, GO, 48 px chrome digits |
 | Grade targets | under the countdown | "S 50,000 · A 35,000 · B 20,000" |

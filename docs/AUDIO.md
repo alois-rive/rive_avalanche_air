@@ -127,6 +127,7 @@ One-shots, each a voice from the pool:
 | `crash` | three thumps 90 to 160 ms apart, a snow poof (noise with a falling low-pass, 0.6 s), the board's clatter (a burst of the rail resonators, damped) |
 | `bail` | one thump and a scrape |
 | `grab` | a soft cloth rustle (noise band-passed at 1.2 kHz, 60 ms) |
+| `ollieReady` | the crouch fully loaded: a short wooden creak (a saw gliding 170 to 240 Hz, low-passed) and a soft ting at 2,093 Hz |
 | `gateWhoosh` | passing an arch: a doppler-like swoosh (band-pass sweeping 2 kHz to 400 Hz, 0.4 s) |
 | `confetti` | two pops (noise bursts, 30 ms) and a crowd cheer (section 8) |
 

@@ -84,8 +84,10 @@ than 120° from the fall line on the snow does the same (a "revert").
 
 | Step | What |
 |---|---|
-| press (south / Space) | the crouch blends in over 0.15 s; the charge counts from 0 to 0.4 s |
-| release | a pop along the ground's normal: `3.0 + 2.0 x min(charge / 0.4, 1)` m/s (a tap 3.0, full 5.0); 0.25 s before the next |
+| press (south / Space) | the crouch blends in over 0.15 s, to 55 % of its depth at once and deeper as the charge counts from 0 to 0.4 s; at full charge the board creaks, a sparkle flashes at the board and the HUD's pop meter turns green |
+| release | a pop along the ground's normal: `3.8 + 2.4 x min(charge / 0.4, 1)` m/s (a tap 3.8, full 6.2: 0.56 and 1.48 m of height on the flat); 0.25 s before the next |
+| a tap within a frame | a press and release that both arrive between two ticks still crouch for one tick, then release: an ollie |
+| a late release | a release on the tick the board leaves a crest or a fold pops as it leaves; one within 0.15 s after the board left the snow without a pop pops in the air ("coyote time") along the snow's last normal |
 | pre-wind | a spin direction held while crouched starts the flight with a spin of 180°/s that way |
 | on a lip | a release while the board is on a kicker's lip adds the pop to the launch; a release in the last 0.12 s before the board leaves the lip is a **perfect pop**: +1.0 m/s more and the next combo's value x 1.1 (TRICKS.md, section 5) |
 

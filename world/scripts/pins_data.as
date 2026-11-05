@@ -70,32 +70,33 @@ export const PIN_CAPTION_SEQ: i32 = 64;  // number out: +1 per spoken line
 export const PIN_BEAT: i32 = 65;  // number out: the music's beat counter
 export const PIN_DEVICE: i32 = 66;  // number out: 0 keyboard, 1 pad: the last used
 export const PIN_GHOST_DELTA: i32 = 67;  // number out: seconds ahead (-) or behind (+) the ghost
-export const PIN_START_SEQ: i32 = 68;  // number in: +1: start from the title
-export const PIN_RESTART_SEQ: i32 = 69;  // number in: +1: restart the run
-export const PIN_QUIT_SEQ: i32 = 70;  // number in: +1: quit to the title
-export const PIN_PAUSED: i32 = 71;  // bool in: the pause menu is open
-export const PIN_SCHEME: i32 = 72;  // number in: 0 Hot Pink, 1 Acid, 2 Blaze
-export const PIN_MUSIC_VOLUME: i32 = 73;  // number in: 0..1
-export const PIN_SFX_VOLUME: i32 = 74;  // number in: 0..1
-export const PIN_VOICE_VOLUME: i32 = 75;  // number in: 0..1
-export const PIN_MUTE: i32 = 76;  // bool in: 
-export const PIN_REDUCED_MOTION: i32 = 77;  // bool in: 
-export const PIN_LANDING_ASSIST: i32 = 78;  // bool in: on by default
-export const PIN_GRIND_ASSIST: i32 = 79;  // bool in: 
-export const PIN_GHOST: i32 = 80;  // bool in: 
-export const PIN_PAD_X: i32 = 81;  // number in: left stick X, dead zone applied (ui/pad.as until E-PAD)
-export const PIN_PAD_Y: i32 = 82;  // number in: left stick Y, up positive
-export const PIN_PAD_BUTTONS: i32 = 83;  // number in: bitmask: 1 south, 2 east, 4 west, 8 north, 16 start, 32 select, 64 up, 128 down, 256 left, 512 right
-export const PIN_UI_MOVE_SEQ: i32 = 84;  // number in: +1 per menu move (a blip)
-export const PIN_UI_SELECT_SEQ: i32 = 85;  // number in: +1 per menu confirm
-export const PIN_UI_BACK_SEQ: i32 = 86;  // number in: +1 per menu back
-export const PIN_INITIALS_IN: i32 = 87;  // number in: the initials entry's letters, packed, written by the Rive side
-export const PIN_INITIALS_DONE_SEQ: i32 = 88;  // number in: +1 when the initials are confirmed
-export const PIN_DEMO: i32 = 89;  // bool in: demo mode: no UI, no input, silent
-export const PIN_AUTOPILOT: i32 = 90;  // number in: 0 off, 1 the low line, 2 the high line (tests, attract)
-export const PIN_SEED: i32 = 91;  // number in: the run's seed (0: 1)
+export const PIN_OLLIE_CHARGE: i32 = 68;  // number out: 0..1 while crouched for an ollie: the HUD's pop meter
+export const PIN_START_SEQ: i32 = 69;  // number in: +1: start from the title
+export const PIN_RESTART_SEQ: i32 = 70;  // number in: +1: restart the run
+export const PIN_QUIT_SEQ: i32 = 71;  // number in: +1: quit to the title
+export const PIN_PAUSED: i32 = 72;  // bool in: the pause menu is open
+export const PIN_SCHEME: i32 = 73;  // number in: 0 Hot Pink, 1 Acid, 2 Blaze
+export const PIN_MUSIC_VOLUME: i32 = 74;  // number in: 0..1
+export const PIN_SFX_VOLUME: i32 = 75;  // number in: 0..1
+export const PIN_VOICE_VOLUME: i32 = 76;  // number in: 0..1
+export const PIN_MUTE: i32 = 77;  // bool in: 
+export const PIN_REDUCED_MOTION: i32 = 78;  // bool in: 
+export const PIN_LANDING_ASSIST: i32 = 79;  // bool in: on by default
+export const PIN_GRIND_ASSIST: i32 = 80;  // bool in: 
+export const PIN_GHOST: i32 = 81;  // bool in: 
+export const PIN_PAD_X: i32 = 82;  // number in: left stick X, dead zone applied (ui/pad.as until E-PAD)
+export const PIN_PAD_Y: i32 = 83;  // number in: left stick Y, up positive
+export const PIN_PAD_BUTTONS: i32 = 84;  // number in: bitmask: 1 south, 2 east, 4 west, 8 north, 16 start, 32 select, 64 up, 128 down, 256 left, 512 right
+export const PIN_UI_MOVE_SEQ: i32 = 85;  // number in: +1 per menu move (a blip)
+export const PIN_UI_SELECT_SEQ: i32 = 86;  // number in: +1 per menu confirm
+export const PIN_UI_BACK_SEQ: i32 = 87;  // number in: +1 per menu back
+export const PIN_INITIALS_IN: i32 = 88;  // number in: the initials entry's letters, packed, written by the Rive side
+export const PIN_INITIALS_DONE_SEQ: i32 = 89;  // number in: +1 when the initials are confirmed
+export const PIN_DEMO: i32 = 90;  // bool in: demo mode: no UI, no input, silent
+export const PIN_AUTOPILOT: i32 = 91;  // number in: 0 off, 1 the low line, 2 the high line (tests, attract)
+export const PIN_SEED: i32 = 92;  // number in: the run's seed (0: 1)
 
-export const PIN_COUNT: i32 = 92;
+export const PIN_COUNT: i32 = 93;
 export const PIN_PATHS: StaticArray<string> = [
     "Pins/Phase",
     "Pins/Score",
@@ -165,6 +166,7 @@ export const PIN_PATHS: StaticArray<string> = [
     "Pins/Beat",
     "Pins/Device",
     "Pins/GhostDelta",
+    "Pins/OllieCharge",
     "Pins/In/StartSeq",
     "Pins/In/RestartSeq",
     "Pins/In/QuitSeq",
@@ -222,6 +224,7 @@ export const PIN_IS_BOOL: StaticArray<u8> = [
     0,
     1,
     1,
+    0,
     0,
     0,
     0,

@@ -92,6 +92,7 @@ export const EV_START: i32 = 25;       // the title's Start
 export const EV_TRICK: i32 = 26;       // a trick completed inside a combo (game.trick holds it)
 // (appended by the gameplay)
 export const EV_RESPAWN: i32 = 27;     // the rider stands again after a crash (a: s), control 0.1 s later
+export const EV_OLLIE_READY: i32 = 28; // the crouch's charge reached full: the ollie's biggest pop is ready
 
 export const EVENT_RING: i32 = 256;
 
@@ -141,6 +142,7 @@ export class RiderState {
     section: i32 = 1;
     highLine: bool = false;
     finished: bool = false;
+    ollieCharge: f32 = 0;    // 0..1 while crouched for an ollie (the HUD's pop meter), 0 otherwise
 }
 
 // ---- the trick being done or last done (docs/TRICKS.md, section 2) ----------

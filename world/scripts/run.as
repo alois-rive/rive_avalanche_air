@@ -31,7 +31,7 @@ import { DrawnPose, FixedClock } from "./lib/kinematic";
 import { RiderView } from "./lib/rider_view";
 import { CAM_CHASE, CAM_CRASH, CAM_FINISH, CAM_GATE, CAM_TITLE, view } from "./lib/view";
 import {
-    PIN_AUTOPILOT, PIN_BAIL_SEQ, PIN_BALANCE, PIN_BANK_SEQ, PIN_BEAT, PIN_CAPTION_LINE, PIN_CAPTION_SEQ,
+    PIN_AUTOPILOT, PIN_OLLIE_CHARGE, PIN_BAIL_SEQ, PIN_BALANCE, PIN_BANK_SEQ, PIN_BEAT, PIN_CAPTION_LINE, PIN_CAPTION_SEQ,
     PIN_COMBO_ACTIVE, PIN_COMBO_MULT, PIN_COMBO_SUM, PIN_COUNT, PIN_COUNTDOWN, PIN_CRASH_SEQ, PIN_DEMO, PIN_DEVICE,
     PIN_GHOST, PIN_GHOST_DELTA, PIN_GRINDING, PIN_GRIND_ASSIST, PIN_HS1_SCORE, PIN_HS1_TAG, PIN_INITIALS_CODE,
     PIN_INITIALS_CURSOR, PIN_INITIALS_DONE_SEQ, PIN_INITIALS_IN, PIN_IS_BOOL, PIN_LANDING_ASSIST, PIN_LINE_HIGH,
@@ -741,6 +741,7 @@ export class Run extends NodeScript {
         this.setNum(PIN_SECTION, <f32>r.section);
         this.setNum(PIN_SPEED_KMH, Mathf.round(r.speed * 3.6));
         this.setNum(PIN_BALANCE, Mathf.round(r.balance * 100) / 100);
+        this.setNum(PIN_OLLIE_CHARGE, Mathf.round(r.ollieCharge * 20) / 20);
         this.setFlag(PIN_GRINDING, r.grind != 0);
         this.setFlag(PIN_LINE_HIGH, r.highLine);
         const results = this.phase == PHASE_RESULTS || this.phase == PHASE_INITIALS;

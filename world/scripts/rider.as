@@ -26,7 +26,7 @@ import {
 } from "./course_api";
 import {
     EV_BAIL, EV_CRASH, EV_GATE, EV_GRAB, EV_GRIND_END, EV_GRIND_START, EV_LAND, EV_LINE, EV_MEGA_TAKEOFF, EV_OLLIE,
-    EV_RESPAWN, EV_SECTION, EV_SPIN_HALF, GRAB_INDY, GRAB_MELON, GRAB_METHOD, GRAB_MUTE, GRAB_NONE, GRIND_NONE, LAND_CLEAN,
+    EV_OLLIE_READY, EV_RESPAWN, EV_SECTION, EV_SPIN_HALF, GRAB_INDY, GRAB_MELON, GRAB_METHOD, GRAB_MUTE, GRAB_NONE, GRIND_NONE, LAND_CLEAN,
     LAND_PERFECT, LAND_SKETCHY, SURF_ICE, SURF_POWDER, SURF_ROCK, game,
 } from "./game_state";
 import { END_POP, GRIND_BAIL, GRIND_END, GRIND_ON, GRIND_STOPPED, Grind, OLLIE_OFF } from "./grind";
@@ -80,8 +80,14 @@ const STEEP_NY: f32 = 0.64;         // steeper than about 50 degrees: a face, no
 const FACE_NY: f32 = 0.66;          // steeper than 48 degrees (a rock band, a drop's face): ridden off, not down
 // the ollie (section 4)
 const CHARGE_MAX: f32 = 0.4;
-const POP_TAP: f32 = 3.0;
-const POP_FULL: f32 = 2.0;
+const POP_TAP: f32 = 3.8;
+const POP_FULL: f32 = 2.4;
+// A release this soon after the board left the snow without a pop (a crest,
+// a fold) still pops: the player let go a moment late ("coyote time").
+const COYOTE: f32 = 0.15;
+// The crouch's depth while charging: from this at a tap to 1 at full charge,
+// so the pose shows how much is loaded.
+const CROUCH_TAP_DEPTH: f32 = 0.55;
 const POP_COOLDOWN: f32 = 0.25;
 const PERFECT_WINDOW: f32 = 0.12;
 const PERFECT_BONUS: f32 = 1.0;
@@ -160,7 +166,7 @@ export function snowAccel(V: f32, ty: f32, ny: f32, mu: f32, tuck: f32, steer: f
     return a;
 }
 
-// The ollie's pop (m/s) from the crouch's charge (s): a tap 3.0, full (0.4 s) 5.0.
+// The ollie's pop (m/s) from the crouch's charge (s): a tap 3.8, full (0.4 s) 6.2.
 export function popSpeed(charge: f32): f32 {
     return POP_TAP + POP_FULL * clampf(charge / CHARGE_MAX, 0, 1);
 }
@@ -207,6 +213,14 @@ export class Rider {
     charge: f32 = 0;
     crouching: bool = false;
     cooldown: f32 = 0;
+    // time left to pop after leaving the snow without a pop, and the snow's
+    // normal there (the pop's direction)
+    coyote: f32 = 0;
+    coyoteNx: f32 = 0;
+    coyoteNy: f32 = 1;
+    coyoteNz: f32 = 0;
+    // EV_OLLIE_READY sent for this crouch
+    readySent: bool = false;
     pendingPop: f32 = 0;
     pendingAge: f32 = 0;
     private gapTicks: i32 = 0;
@@ -424,10 +438,16 @@ export class Rider {
         const wasCrouching = this.crouching;
         this.crouching = control && inp.crouch;
         if (this.crouching) {
-            this.crouch = approach(this.crouch, 1, CROUCH_IN * dt);
             this.charge = this.charge + dt < CHARGE_MAX ? this.charge + dt : CHARGE_MAX;
+            const loaded = this.charge / CHARGE_MAX;
+            this.crouch = approach(this.crouch, CROUCH_TAP_DEPTH + (1 - CROUCH_TAP_DEPTH) * loaded, CROUCH_IN * dt);
+            if (loaded >= 1 && !this.readySent) {
+                this.readySent = true;
+                game.events.push(EV_OLLIE_READY);
+            }
         } else {
             this.crouch = approach(this.crouch, 0, CROUCH_IN * dt);
+            this.readySent = false;
         }
         const tuckOn = control && inp.tuck && !this.crouching && this.stumble <= 0;
         this.tuck = approach(this.tuck, tuckOn ? 1 : 0, (tuckOn ? TUCK_IN : TUCK_OUT) * dt);
@@ -527,6 +547,8 @@ export class Rider {
         this.vz = vz;
         // the crouch released: an ollie (on a lip, held to the lip's edge)
         const released = wasCrouching && !this.crouching && control;
+        // (a release on the tick the board leaves a crest pops as it leaves)
+        let crestPop: f32 = 0;
         if (released && this.cooldown <= 0) {
             const pop = popSpeed(this.charge);
             this.charge = 0;
@@ -537,6 +559,8 @@ export class Rider {
                 this.y = floor;
                 this.ollie(pop, inp.x, false);
                 return;
+            } else {
+                crestPop = pop;
             }
         }
         if (!this.crouching && !released) this.charge = 0;
@@ -556,8 +580,21 @@ export class Rider {
                 game.events.push(EV_OLLIE, pop, perfect ? 1 : 0);
                 this.toAir(perfect);
                 this.prewind(inp.x);
+            } else if (crestPop > 0) {
+                this.vx += crestPop * this.nx;
+                this.vy += crestPop * this.ny;
+                this.vz += crestPop * this.nz;
+                this.cooldown = POP_COOLDOWN;
+                game.events.push(EV_OLLIE, crestPop, 0);
+                this.toAir(false);
+                this.prewind(inp.x);
             } else {
                 this.toAir(false);
+                // left without a pop: a release in the next moment still pops
+                this.coyote = COYOTE;
+                this.coyoteNx = this.nx;
+                this.coyoteNy = this.ny;
+                this.coyoteNz = this.nz;
             }
             if (lipped && MEGA_LIP_S > 0 && Mathf.abs(this.s - MEGA_LIP_S) < 12) game.events.push(EV_MEGA_TAKEOFF);
             return;
@@ -690,6 +727,7 @@ export class Rider {
             Mathf.sqrt(this.vx * this.vx + this.vz * this.vz).toString() + " vy " + this.vy.toString() + " lip " +
             (this.onLip ? "1" : "0") + " perfect " + (perfect ? "1" : "0") + " feature " + this.feature.toString());
         this.mode = MODE_AIR;
+        this.coyote = 0;
         this.airTime = 0;
         this.spinRate = 0;
         this.flipRate = 0;
@@ -731,8 +769,32 @@ export class Rider {
         this.x += this.vx * dt;
         this.y += this.vy * dt;
         this.z += this.vz * dt;
-        this.crouch = approach(this.crouch, 0, CROUCH_IN * dt);
+        const wasCrouching = this.crouching;
         this.crouching = control && inp.crouch;
+        if (this.coyote > 0) {
+            // just off the snow without a pop: the crouch still holds and a
+            // release pops, as it would have a moment earlier
+            this.coyote -= dt;
+            if (wasCrouching && !this.crouching && control && this.cooldown <= 0) {
+                const pop = popSpeed(this.charge);
+                this.charge = 0;
+                this.coyote = 0;
+                this.vx += pop * this.coyoteNx;
+                this.vy += pop * this.coyoteNy;
+                this.vz += pop * this.coyoteNz;
+                this.cooldown = POP_COOLDOWN;
+                game.events.push(EV_OLLIE, pop, 0);
+                if (this.log) console.log("coyote pop s " + this.s.toString() + " pop " + pop.toString() + " air " + this.airTime.toString());
+                this.prewind(inp.x);
+                this.solveFlight();
+            }
+        }
+        if (this.coyote > 0 && this.crouching) {
+            this.charge = this.charge + dt < CHARGE_MAX ? this.charge + dt : CHARGE_MAX;
+        } else {
+            this.crouch = approach(this.crouch, 0, CROUCH_IN * dt);
+            if (!this.crouching) this.charge = 0;
+        }
         // the grab
         let want = GRAB_NONE;
         if (control) {
@@ -1321,6 +1383,7 @@ export class Rider {
         r.tumbling = this.mode == MODE_TUMBLE;
         r.tuck = this.tuck;
         r.crouch = this.crouch;
+        r.ollieCharge = this.crouching && (this.mode == MODE_GROUND || this.coyote > 0) ? clampf(this.charge / CHARGE_MAX, 0, 1) : 0;
         r.carve = this.mode == MODE_GROUND ? this.carve : 0;
         r.skid = this.mode == MODE_GROUND ? this.skid : 0;
         // -1 heel .. +1 toe: a right turn is on the toes for a regular rider riding forward

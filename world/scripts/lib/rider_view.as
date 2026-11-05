@@ -11,7 +11,7 @@
 import { CPUParticles3D, Mat4, SceneNode, ScriptAnimation, ScriptScene, Vec3, Vec4 } from "hedra_engine/script";
 import { GroundHit, ground } from "../course_api";
 import {
-    EV_CRASH, EV_LAND, EV_PERFECT, GRAB_INDY, GRAB_MELON, GRAB_METHOD, GRAB_MUTE, GRAB_NONE, game,
+    EV_CRASH, EV_LAND, EV_OLLIE_READY, EV_PERFECT, GRAB_INDY, GRAB_MELON, GRAB_METHOD, GRAB_MUTE, GRAB_NONE, game,
 } from "../game_state";
 import { MODE_AIR, MODE_GRIND, MODE_GROUND, MODE_TUMBLE, Rider } from "../rider";
 import { DEG, DrawnPose, approach, clampf } from "./kinematic";
@@ -269,7 +269,8 @@ export class RiderView {
         if (e.emitting != on) e.emitting = on;
     }
 
-    // The events since the last frame: a landing's burst, a perfect's sparkle.
+    // The events since the last frame: a landing's burst, a perfect's sparkle,
+    // the same sparkle when the ollie's crouch is fully loaded.
     private events(): void {
         const ev = game.events;
         let c = this.cursor;
@@ -278,7 +279,7 @@ export class RiderView {
             const i = c % 256;
             const k = ev.kinds[i];
             if (k == EV_LAND || k == EV_CRASH) this.restart(this.burst);
-            else if (k == EV_PERFECT) this.restart(this.sparkle);
+            else if (k == EV_PERFECT || k == EV_OLLIE_READY) this.restart(this.sparkle);
         }
         this.cursor = c;
     }

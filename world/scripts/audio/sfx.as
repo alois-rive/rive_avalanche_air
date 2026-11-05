@@ -4,7 +4,7 @@
 import { Rng, SPU_RATE } from "./dsp";
 import {
     BUS_SFX, BUS_UI, FILT_BP, FILT_HP, FILT_LP, NOISE_BROWN, NOISE_PINK, NOISE_WHITE,
-    VoicePool, WAVE_METAL, WAVE_SINE, WAVE_SQUARE, WAVE_TRI,
+    VoicePool, WAVE_METAL, WAVE_SAW, WAVE_SINE, WAVE_SQUARE, WAVE_TRI,
 } from "./voices";
 
 const LAND_SKETCHY: i32 = 2;
@@ -70,6 +70,13 @@ export function sfxBail(p: VoicePool, rng: Rng): void {
     const v = p.alloc(BUS_SFX).noiseLayer(NOISE_BROWN, 1, 0.01, 0.15, 0.3)
         .filter(FILT_BP, 3800, 2500, 0.2, 1.2, false).out(0.55, 0.2 * rng.white(), 0.1, 0.6);
     v.delay = ms(40);
+}
+
+export function sfxOllieReady(p: VoicePool): void {
+    // the board loaded: a short wooden creak as it flexes, and a soft ting
+    p.alloc(BUS_SFX).tone(WAVE_SAW, 170, 240, 0.05, 1, 0.004, 0.02, 0.06)
+        .filter(FILT_LP, 900, 900, 0, 0.7, false).out(0.22, 0, 0.05, 0.2);
+    p.alloc(BUS_SFX).tone(WAVE_SINE, 2093, 2093, 0, 1, 0.002, 0.02, 0.12).out(0.09, 0, 0.4, 0);
 }
 
 export function sfxGrab(p: VoicePool): void {

@@ -113,6 +113,10 @@ export class Controls {
     leftPressed: bool = false;
     rightPressed: bool = false;
     typed: i32 = 0;                 // a letter or digit typed (its key code), 0 none
+    // Space or south pressed since the last tick: the crouch is held for at
+    // least one tick, so a tap that goes down and up within one frame (both
+    // events before the frame's ticks) still crouches, then releases: an ollie
+    private crouchTap: bool = false;
     deletePressed: bool = false;
 
     // Folds one key event in; true when it was one of the game's keys.
@@ -133,6 +137,7 @@ export class Controls {
                 this.restartPressed = true;
                 used = true;
             }
+            if (key == KEY_SPACE) this.crouchTap = true;
             if (key == KEY_ENTER || key == KEY_KP_ENTER || key == KEY_SPACE) {
                 this.confirmPressed = true;
                 used = true;
@@ -192,7 +197,10 @@ export class Controls {
         this.padButtons = buttons;
         if (pressed != 0 || Mathf.abs(x) > 0.5 || Mathf.abs(y) > 0.5) this.device = 1;
         if ((pressed & PAD_START) != 0) this.restartPressed = true;
-        if ((pressed & PAD_SOUTH) != 0) this.confirmPressed = true;
+        if ((pressed & PAD_SOUTH) != 0) {
+            this.confirmPressed = true;
+            this.crouchTap = true;
+        }
         if ((pressed & PAD_SELECT) != 0) this.backPressed = true;
         if ((pressed & PAD_UP) != 0) this.upPressed = true;
         if ((pressed & PAD_DOWN) != 0) this.downPressed = true;
@@ -227,7 +235,8 @@ export class Controls {
         if ((pb & PAD_DOWN) != 0) py = -1;
         out.y = clampf(ky + py, -1, 1);
         out.tuck = (h & K_TUCK) != 0 || this.padY < TUCK_STICK;
-        out.crouch = (h & K_CROUCH) != 0 || (pb & PAD_SOUTH) != 0;
+        out.crouch = (h & K_CROUCH) != 0 || (pb & PAD_SOUTH) != 0 || this.crouchTap;
+        this.crouchTap = false;
         let g = 0;
         if ((h & K_INDY) != 0 || (pb & PAD_WEST) != 0) g |= GRAB_BIT_INDY;
         if ((h & K_MELON) != 0 || (pb & PAD_EAST) != 0) g |= GRAB_BIT_MELON;
