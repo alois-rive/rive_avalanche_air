@@ -385,7 +385,7 @@ export function obstacle(i: i32, out: Obstacle): void {
     out.radius = OBS[b + 2];
     out.bottom = OBS[b + 3];
     out.top = OBS[b + 4];
-    out.rock = OBS_ROCK[i];
+    out.rock = OBS_ROCK[i] != 0;
 }
 
 const OBS_REACH: f32 = 2;   // the largest obstacle radius, rounded up
@@ -437,7 +437,7 @@ export function feature(i: i32, out: Feature): void {
     out.kind = FEAT_KIND[i];
     out.s = FEAT_S[i];
     out.x = FEAT_X[i];
-    out.high = FEAT_HIGH[i];
+    out.high = FEAT_HIGH[i] != 0;
     out.lipHeight = FEAT_LIPH[i];
     out.lipAngle = FEAT_LIPA[i];
     out.designSpeed = FEAT_V[i];

@@ -152,9 +152,11 @@ def pins_data():
     out.append("export const PIN_PATHS: StaticArray<string> = [")
     out.extend(f'    "{p}",' for p in paths)
     out.append("];")
-    out.append("// true for a boolean pin (its visible), false for a number (its position.x)")
-    out.append("export const PIN_IS_BOOL: StaticArray<bool> = [")
-    out.extend(f"    {'true' if k == 'bool' else 'false'}," for _, k, _, _ in rows)
+    out.append("// 1 for a boolean pin (its visible), 0 for a number (its position.x); u8, not")
+    out.append("// bool: the pinned compiler reads a bool array literal's elements after the")
+    out.append("// first as false (rive_modeler's check_repo \"bools\")")
+    out.append("export const PIN_IS_BOOL: StaticArray<u8> = [")
+    out.extend(f"    {'1' if k == 'bool' else '0'}," for _, k, _, _ in rows)
     out.append("];")
     return "\n".join(out) + "\n"
 

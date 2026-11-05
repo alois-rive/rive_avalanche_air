@@ -125,7 +125,10 @@ def module(data, trees):
     L += arr("FEAT_KIND", "i32", [f["kind"] for f in fs], fi)
     L += arr("FEAT_S", "f32", [f["s"] for f in fs], ff)
     L += arr("FEAT_X", "f32", [f["x"] for f in fs], ff)
-    L += arr("FEAT_HIGH", "bool", [f["high"] for f in fs], lambda v: "true" if v else "false")
+    # (u8, not bool: the pinned compiler reads every element of a bool
+    # array literal after the first as false; rive_modeler's check_repo
+    # "bools", cli/program/ENGINEERING.md pitfall 20)
+    L += arr("FEAT_HIGH", "u8", [f["high"] for f in fs], lambda v: "1" if v else "0")
     L += arr("FEAT_LIPH", "f32", [f["lip_h"] for f in fs], ff)
     L += arr("FEAT_LIPA", "f32", [f["lip_a"] for f in fs], ff)
     L += arr("FEAT_V", "f32", [f["v"] for f in fs], ff)
@@ -185,7 +188,7 @@ def module(data, trees):
     for o in obs:
         ov += [o["x"], o["z"], o["r"], o["bottom"], o["top"]]
     L += arr("OBS", "f32", ov, ff, 15, "x, z, radius, bottom, top (sorted by z, down the course)")
-    L += arr("OBS_ROCK", "bool", [o.get("rock", False) for o in obs], lambda v: "true" if v else "false", 24)
+    L += arr("OBS_ROCK", "u8", [o.get("rock", False) for o in obs], lambda v: "1" if v else "0", 24)
     starts = []
     k = 0
     for b in range(g.brows + 1):
