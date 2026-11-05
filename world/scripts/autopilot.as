@@ -47,6 +47,7 @@ export class Autopilot {
     private fgrind: StaticArray<bool> = new StaticArray<bool>(MAX_FEATURES);
     private count: i32 = 0;
     private index: i32 = -1;
+    private hint: i32 = -1;
     private lastMode: i32 = MODE_GROUND;
     // the air's plan
     private spinTarget: f32 = 0;
@@ -152,6 +153,7 @@ export class Autopilot {
 
     reset(): void {
         this.index = -1;
+        this.hint = -1;
         this.planned = false;
         this.lastMode = MODE_GROUND;
         this.crouching = false;
@@ -195,7 +197,8 @@ export class Autopilot {
         // the look-ahead grows with speed (a short one weaves at speed)
         const minLook = garden ? LOOK_GARDEN : LOOK;
         const look = r.V * 0.8 > minLook ? r.V * 0.8 : minLook;
-        const idx = nearestSample(r.x, r.z, -1, this.high);
+        const idx = nearestSample(r.x, r.z, this.hint, this.high);
+        this.hint = idx;
         let ahead = idx + <i32>look;
         const last = lineCount(this.high) - 1;
         if (ahead > last) ahead = last;
