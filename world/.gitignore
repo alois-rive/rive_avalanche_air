@@ -1,0 +1,3 @@
+# The built scenes' declarations `hedra build` writes: the built
+# files are under the Rive project's build/, which git ignores too.
+/hedra.built.rml

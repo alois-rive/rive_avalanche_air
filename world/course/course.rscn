@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- PLACEHOLDER (the course's owner replaces it: tools/course/make_course.py
+     writes this file). A 15-degree slope 400 m long down -Z, matching the
+     placeholder world/scripts/course_api.as. -->
+<rscn format="1">
+  <ext_resource id="1_surface" type="Shader" path="res://psx/psx_surface.wgsl"/>
+  <sub_resource id="Mat_snow" type="ShaderMaterial">
+    <property name="shader">ExtResource("1_surface")</property>
+    <property name="shader_parameter/albedo">Color(0.92, 0.94, 1.0, 1)</property>
+    <property name="shader_parameter/sun_direction">Vector3(-0.45, 0.47, -0.76)</property>
+  </sub_resource>
+  <sub_resource id="Mesh_slope" type="PlaneMesh">
+    <property name="size">Vector2(120, 414)</property>
+    <property name="subdivide_width">59</property>
+    <property name="subdivide_depth">206</property>
+    <property name="material">SubResource("Mat_snow")</property>
+  </sub_resource>
+  <node name="Course" type="Node3D"/>
+  <node name="Slope" type="MeshInstance3D" parent=".">
+    <property name="mesh">SubResource("Mesh_slope")</property>
+    <property name="position">Vector3(0, -53.58, -200)</property>
+    <property name="rotation_degrees">Vector3(-15, 0, 0)</property>
+  </node>
+</rscn>

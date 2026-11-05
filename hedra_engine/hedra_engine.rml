@@ -1,0 +1,72 @@
+<Rive version="1" kind="fragment">
+    <!-- The hedra_engine library's declarations, the same in every Rive project
+         (vendored by the CLI's `build` with the library; do not edit). Ids of
+         client 93. The ScriptAsset is the Scene3D component
+         (hedra_engine/scene3d.as): place a ScriptedLayout with
+         scriptAssetId="93:1" and bind its artboard to a view model with the
+         properties of Scene3D below (viewModelId="93:10", or a view model of
+         your own with any of these names, and `data` for the scene's
+         bindings). `scene` is the scene's path in the Rive project
+         ("world/courtyard.rscn"; empty: the main scene of the only Hedra
+         project), `source` auto, text or built, `unbuiltLabel` the label
+         shown while a scene is drawn from its text under auto, `animation`
+         the name of the scene's timeline to play (empty: none),
+         `stateMachine` the scene's state machine to run (empty: its
+         default; `-`: none), `events` written: the names of the events the
+         scene fired in the last advance, one a line (empty: none);
+         `renderScale` the 3D's render scale (0.25 to 2; 0: the project's
+         rendering/scaling_3d/scale), `scalingMode` bilinear or fsr (empty:
+         the project's), `maxDensity` and `maxPixels` the 3D picture's caps
+         (0: the project's; negative: none); `loadBudget` the milliseconds
+         an advance spends loading a scene at most (0: the project's
+         loading/frame_budget_msec; negative: the whole load at once),
+         `progress` written: how far the scene's load is, 0 to 1,
+         `resources` written: the run time's resources as JSON (count,
+         refs, cpu and gpu bytes, textures, buffers, fallbacks),
+         `resourceSummary` written: the same as lines for a text run. -->
+    <ScriptAsset file="hedra_engine/scene3d.as" name="hedra_engine/scene3d" id="93:1"/>
+    <ViewModel defaultInstanceId="93:11" name="Scene3D" id="93:10">
+        <ViewModelPropertyString name="scene" id="93:12"/>
+        <ViewModelPropertyString name="source" id="93:13"/>
+        <ViewModelPropertyBoolean name="unbuiltLabel" id="93:14"/>
+        <ViewModelPropertyString name="camera" id="93:15"/>
+        <ViewModelPropertyBoolean name="playing" id="93:16"/>
+        <ViewModelPropertyNumber name="speed" id="93:17"/>
+        <ViewModelPropertyNumber name="yaw" id="93:18"/>
+        <ViewModelPropertyNumber name="lodThreshold" id="93:19"/>
+        <ViewModelPropertyString name="status" id="93:20"/>
+        <ViewModelPropertyString name="animation" id="93:21"/>
+        <ViewModelPropertyString name="stateMachine" id="93:22"/>
+        <ViewModelPropertyString name="events" id="93:23"/>
+        <ViewModelPropertyNumber name="renderScale" id="93:24"/>
+        <ViewModelPropertyString name="scalingMode" id="93:25"/>
+        <ViewModelPropertyNumber name="maxDensity" id="93:26"/>
+        <ViewModelPropertyNumber name="maxPixels" id="93:27"/>
+        <ViewModelPropertyNumber name="loadBudget" id="93:28"/>
+        <ViewModelPropertyNumber name="progress" id="93:29"/>
+        <ViewModelPropertyString name="resources" id="93:30"/>
+        <ViewModelPropertyString name="resourceSummary" id="93:31"/>
+        <ViewModelInstance exports="true" name="Default" id="93:11">
+            <ViewModelInstanceString propertyValue="" viewModelPropertyId="93:12"/>
+            <ViewModelInstanceString propertyValue="auto" viewModelPropertyId="93:13"/>
+            <ViewModelInstanceBoolean propertyValue="true" viewModelPropertyId="93:14"/>
+            <ViewModelInstanceString propertyValue="" viewModelPropertyId="93:15"/>
+            <ViewModelInstanceBoolean propertyValue="true" viewModelPropertyId="93:16"/>
+            <ViewModelInstanceNumber propertyValue="1" viewModelPropertyId="93:17"/>
+            <ViewModelInstanceNumber propertyValue="0" viewModelPropertyId="93:18"/>
+            <ViewModelInstanceNumber propertyValue="1" viewModelPropertyId="93:19"/>
+            <ViewModelInstanceString propertyValue="" viewModelPropertyId="93:20"/>
+            <ViewModelInstanceString propertyValue="" viewModelPropertyId="93:21"/>
+            <ViewModelInstanceString propertyValue="" viewModelPropertyId="93:22"/>
+            <ViewModelInstanceString propertyValue="" viewModelPropertyId="93:23"/>
+            <ViewModelInstanceNumber propertyValue="0" viewModelPropertyId="93:24"/>
+            <ViewModelInstanceString propertyValue="" viewModelPropertyId="93:25"/>
+            <ViewModelInstanceNumber propertyValue="0" viewModelPropertyId="93:26"/>
+            <ViewModelInstanceNumber propertyValue="0" viewModelPropertyId="93:27"/>
+            <ViewModelInstanceNumber propertyValue="0" viewModelPropertyId="93:28"/>
+            <ViewModelInstanceNumber propertyValue="0" viewModelPropertyId="93:29"/>
+            <ViewModelInstanceString propertyValue="" viewModelPropertyId="93:30"/>
+            <ViewModelInstanceString propertyValue="" viewModelPropertyId="93:31"/>
+        </ViewModelInstance>
+    </ViewModel>
+</Rive>

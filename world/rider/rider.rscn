@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- PLACEHOLDER (the gameplay's owner replaces it: the segmented rider,
+     docs/LOOK.md section 5). Its root is moved by scripts/run.as. -->
+<rscn format="1">
+  <ext_resource id="1_surface" type="Shader" path="res://psx/psx_surface.wgsl"/>
+  <sub_resource id="Mat_jacket" type="ShaderMaterial">
+    <property name="shader">ExtResource("1_surface")</property>
+    <property name="shader_parameter/albedo">Color(0.97, 0.22, 0.56, 1)</property>
+  </sub_resource>
+  <sub_resource id="Mesh_body" type="BoxMesh">
+    <property name="size">Vector3(0.5, 1.6, 0.3)</property>
+    <property name="material">SubResource("Mat_jacket")</property>
+  </sub_resource>
+  <node name="Rider" type="Node3D"/>
+  <node name="Body" type="MeshInstance3D" parent=".">
+    <property name="mesh">SubResource("Mesh_body")</property>
+    <property name="position">Vector3(0, 0.8, 0)</property>
+  </node>
+</rscn>

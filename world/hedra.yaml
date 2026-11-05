@@ -1,0 +1,7 @@
+# Avalanche Air's world (../docs/SPEC.md): the scene the Main artboard's
+# Scene3D shows and `hedra play` plays. run.rscn is the PSX frame rig
+# (../.claude/skills/psx-style/assets/scenes/psx_frame.rscn) with the course,
+# the rider and the cameras under its LowRes SubViewport.
+main_scene: res://run.rscn
+rendering/anti_aliasing/quality/msaa_3d: disabled
+export/embed_sources: false

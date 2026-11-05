@@ -1,0 +1,30 @@
+# Written by `hedra build --init` for the Hedra project world.
+# Bake it with `rive <this folder> --unsigned-riv`, once `hedra build` has vendored
+# the hedra_engine library and built the scenes. It is yours to edit.
+name: avalanche
+main: Main
+scripting: wasm
+
+# Loading a scene and instancing it run in one advance: no per-call budget.
+dangerouslyFast: true
+
+# A scene runs for as long as it is shown, so its memory must be freed:
+# `frame` collects every frame.
+wasmRuntime: frame
+wasmMaxPages: 65536
+
+logs:
+  file: build/rive.log
+  problems: build/problems.log
+
+# rive's own output, and what the tools write inside the Hedra project:
+# its import caches and Play's project (build/play/), whose .as files rive
+# would compile. (`*` matches across folders. An excluded file is not
+# compiled, but a BlobAsset may still name it.)
+exclude:
+  - build
+  - "*/build/*"
+  - world/psx
+  - tools
+  - assets
+  - "**/__pycache__"

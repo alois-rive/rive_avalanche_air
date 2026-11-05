@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- psx_frame.rscn: the PSX frame (psx-style SKILL.md, "The frame").
+     The game is drawn at 320 x 240 into the SubViewport `LowRes`, in a
+     world of its own; the main world holds only `Screen`, a camera with the
+     full-screen quad that shows that picture through psx_present.wgsl:
+     nearest-upscaled, pillarboxed to 4:3, quantised to 15-bit colour with
+     the PlayStation's dither. Put the game's scene under `LowRes` (instance
+     it as `LowRes/Game`), its camera as `LowRes/Lens`.
+     Copy assets/shaders/ into the project as `psx/`; `hedra render` this
+     file (with MSAA off) to see the rig with a placeholder ground and
+     sky. The project sets rendering/anti_aliasing/quality/msaa_3d to
+     disabled in hedra.yaml: MSAA on the main view blends the quad's
+     diagonal off the 15-bit grid. -->
+<rscn format="1">
+  <ext_resource id="1_present" type="Shader" path="psx/psx_present.wgsl"/>
+  <ext_resource id="2_surface" type="Shader" path="psx/psx_surface.wgsl"/>
+  <ext_resource id="3_sky" type="Shader" path="psx/psx_sky.wgsl"/>
+
+  <!-- The main world: black bars, a linear tone map (the picture is not
+       tone mapped twice), nothing else. -->
+  <sub_resource id="Env_frame" type="Environment">
+    <property name="background_mode">1</property>
+    <property name="background_color">Color(0, 0, 0, 1)</property>
+    <property name="tonemap_mode">0</property>
+  </sub_resource>
+  <sub_resource id="Tex_low" type="ViewportTexture">
+    <property name="viewport_path">NodePath("LowRes")</property>
+  </sub_resource>
+  <sub_resource id="Mat_present" type="ShaderMaterial">
+    <property name="shader">ExtResource("1_present")</property>
+    <property name="shader_parameter/screen">SubResource("Tex_low")</property>
+    <property name="shader_parameter/low_res">Vector2(320, 240)</property>
+  </sub_resource>
+  <sub_resource id="Mesh_present" type="QuadMesh">
+    <property name="material">SubResource("Mat_present")</property>
+  </sub_resource>
+  <!-- WORKAROUND (gap E-VPTEX, hedra 0.1.0): a ViewportTexture named only
+       by a ShaderMaterial's parameter samples black, because the viewport
+       makes its colour target only for a standard slot that uses it. This
+       1 mm quad, out of sight behind the present quad, names it in a
+       standard slot. Remove it once the engine binds shader parameters. -->
+  <sub_resource id="Mat_anchor" type="StandardMaterial3D">
+    <property name="shading_mode">0</property>
+    <property name="albedo_texture">SubResource("Tex_low")</property>
+  </sub_resource>
+  <sub_resource id="Mesh_anchor" type="QuadMesh">
+    <property name="size">Vector2(0.001, 0.001)</property>
+    <property name="material">SubResource("Mat_anchor")</property>
+  </sub_resource>
+
+  <!-- The game's world: depth fog the colour of the sky's horizon, a linear
+       tone map, glow only for what passes 1.0 (psx_surface's `overbright`,
+       `emission`). -->
+  <sub_resource id="Env_game" type="Environment">
+    <property name="background_mode">1</property>
+    <property name="background_color">Color(0.8, 0.86, 0.96, 1)</property>
+    <property name="tonemap_mode">0</property>
+    <property name="fog_enabled">true</property>
+    <property name="fog_mode">1</property>
+    <property name="fog_light_color">Color(0.8, 0.86, 0.96, 1)</property>
+    <property name="fog_depth_begin">20</property>
+    <property name="fog_depth_end">90</property>
+    <property name="fog_density">1.0</property>
+    <property name="glow_enabled">false</property>
+  </sub_resource>
+  <sub_resource id="Mat_sky" type="ShaderMaterial">
+    <property name="shader">ExtResource("3_sky")</property>
+    <property name="shader_parameter/horizon">Color(0.8, 0.86, 0.96, 1)</property>
+  </sub_resource>
+  <sub_resource id="Mesh_sky" type="SphereMesh">
+    <property name="radius">400</property>
+    <property name="height">800</property>
+    <property name="radial_segments">24</property>
+    <property name="rings">12</property>
+    <property name="material">SubResource("Mat_sky")</property>
+  </sub_resource>
+  <sub_resource id="Mat_ground" type="ShaderMaterial">
+    <property name="shader">ExtResource("2_surface")</property>
+    <property name="shader_parameter/albedo">Color(0.9, 0.93, 1.0, 1)</property>
+  </sub_resource>
+  <sub_resource id="Mesh_ground" type="PlaneMesh">
+    <property name="size">Vector2(100, 100)</property>
+    <property name="subdivide_width">49</property>
+    <property name="subdivide_depth">49</property>
+    <property name="material">SubResource("Mat_ground")</property>
+  </sub_resource>
+
+  <node name="psx_frame" type="Node3D"/>
+  <node name="FrameEnvironment" type="WorldEnvironment" parent=".">
+    <property name="environment">SubResource("Env_frame")</property>
+  </node>
+  <node name="Screen" type="Camera3D" parent=".">
+    <property name="current">true</property>
+  </node>
+  <node name="Present" type="MeshInstance3D" parent="Screen">
+    <property name="mesh">SubResource("Mesh_present")</property>
+    <property name="position">Vector3(0, 0, -1)</property>
+  </node>
+  <node name="Anchor" type="MeshInstance3D" parent="Screen">
+    <property name="mesh">SubResource("Mesh_anchor")</property>
+    <property name="position">Vector3(0, 0, -2)</property>
+  </node>
+
+  <!-- 320 x 240, drawn every frame, its own world (lights, Environment,
+       decals): nothing of the game is drawn in the main view. Physics in
+       script (box3d-as) is unaffected; Hedra's own interaction world
+       (Area3D, ray casts, listeners) does not reach an own world. -->
+  <node name="LowRes" type="SubViewport" parent=".">
+    <property name="size">Vector2i(320, 240)</property>
+    <property name="render_target_update_mode">4</property>
+    <property name="own_world_3d">true</property>
+  </node>
+  <node name="Environment" type="WorldEnvironment" parent="LowRes">
+    <property name="environment">SubResource("Env_game")</property>
+  </node>
+  <!-- The sky follows the lens (a script copies its position each frame). -->
+  <node name="Sky" type="MeshInstance3D" parent="LowRes">
+    <property name="mesh">SubResource("Mesh_sky")</property>
+    <property name="position">Vector3(0, 1.7, 6)</property>
+  </node>
+  <node name="Ground" type="MeshInstance3D" parent="LowRes">
+    <property name="mesh">SubResource("Mesh_ground")</property>
+  </node>
+  <node name="Lens" type="Camera3D" parent="LowRes">
+    <property name="position">Vector3(0, 1.7, 6)</property>
+    <property name="rotation_degrees">Vector3(-6, 0, 0)</property>
+    <property name="fov">65</property>
+    <property name="current">true</property>
+  </node>
+</rscn>
