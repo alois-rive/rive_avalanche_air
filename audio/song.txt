@@ -1,0 +1,278 @@
+# "Ice Breaker (170)": Avalanche Air's music (docs/AUDIO.md, section 5).
+# An original drum-and-bass track in F minor at 170 BPM, every note of it
+# synthesised by the Spu. tools/make_music.py compiles this file into
+# world/scripts/audio/music_data.as.
+#
+# The format, tracker-like:
+#   tempo N, swing P            the tempo (BPM) and the swing of the odd 16ths (%)
+#   chord NAME notes...         a chord, its notes as names (C4 is MIDI 60)
+#   drums NAME ... end          a drum pattern: one row per instrument,
+#                               K kick, S snare, G ghost snare, H closed hat,
+#                               O open hat, R ride, C crash; 16 steps a bar,
+#                               bars joined with |; X accent, x hit, o soft
+#   bass NAME ... end           a bass line: one token a 16th, a note name,
+#                               - hold, . release; ~ before a note glides into it
+#   stab NAME ... end           the chord stabs: one row, x hit, X accent
+#   arp NAME ... end            the arpeggio: one token a 16th, 0..9 an index
+#                               into the chord's notes over two octaves, . rest
+#   harm NAME chords...         a chord a bar
+#   section NAME bars N [bass reese|sub|both|none] [pad 0..1] [loop BAR]
+#     drums|bass|stab|arp|harm patterns...   (each pattern fills its bars,
+#                               - one bar of silence; the list is repeated
+#                               to fill the section)
+#     fx ROW                    a character a bar: C crash, I impact (a
+#                               reversed swell before it), . nothing
+#   end
+
+tempo 170
+swing 54
+
+# ---- the harmony: F minor --------------------------------------------------
+chord Fm9     F3 Ab3 C4 Eb4 G4
+chord Dbmaj9  Db3 F3 Ab3 C4 Eb4
+chord Ebadd9  Eb3 G3 Bb3 F4 Bb4
+chord Cm7     C3 Eb3 G3 Bb3 Eb4
+chord Bbm9    Bb2 Db3 F3 Ab3 C4
+chord Abmaj9  Ab2 C3 Eb3 G3 Bb3
+chord C7b9    C3 E3 G3 Bb3 Db4
+
+harm progA  Fm9 Dbmaj9 Ebadd9 Cm7
+harm progB  Bbm9 Fm9 Abmaj9 C7b9
+harm hold   Fm9
+
+# ---- the break: a chopped 90s two-step, played by the synth ----------------
+drums brkA
+K x.........x.....
+S ....X.......X...
+G .......o.o.....o
+H x.xox.x.x.xox.xo
+end
+
+drums brkB
+K x.x.......x.....
+S ....X..o.o..X...
+G ..............oo
+H x.x.x.xox.x.x.x.
+end
+
+drums brkFill
+K x.........x.....
+S ....X.......XoXX
+G .......o.o......
+H x.x.x.x.x.x.....
+end
+
+# A2: the open hats
+drums brkO
+K x.........x.....
+S ....X.......X...
+G .......o.o.....o
+H x...x.x.x...x.xo
+O ..x.......x.....
+end
+
+drums brkO2
+K x.x.......x..x..
+S ....X..o.o..X...
+G ..............oo
+H x...x.xox...x.x.
+O ..x.......x.....
+end
+
+# A3: everything, the ride on the beat
+drums brkR
+K x.........x.....
+S ....X.......X...
+G .......o.o.o...o
+H ..xo..x...xo..x.
+O ..........x.....
+R x...x...x...x...
+end
+
+drums brkRFill
+K x.x.......x.x...
+S ....X..o.o..XXXX
+G ...o............
+H ..xo..x...xo....
+R x...x...x...x...
+end
+
+# the mega-jump's riser: the drums thin out
+drums thin1
+K x.........x.....
+S ....X.......X...
+H x.x.x.x.x.x.x.x.
+end
+
+drums thin2
+K x.......x.......
+H x.x.x.x.x.x.x.x.
+end
+
+drums thin3
+H x.x.x.x.x.x.x.x.
+end
+
+drums thin4
+H xxxxxxxxxxxxxxxx
+S ........x.x.xxxx
+end
+
+# the air: a heartbeat
+drums airBeat
+K x.......x.......
+end
+
+# the results: a half-time break
+drums half
+K x.....x...x.....
+S ........X.......
+G ...o.........o..
+H x.x.x.x.x.x.x.x.
+end
+
+drums halfB
+K x.....x.x.......
+S ........X.....o.
+G ...o............
+H x.x.x.x.x.x.xox.
+end
+
+# ---- the bass: the reese and its sub ----------------------------------------
+bass bassA
+F2 - - - - - . F2 - . C3 - - Ab2 - . | Db2 - - - - - . Db2 - . Ab2 - - F2 - . | Eb2 - - - - - . Eb2 - . Bb2 - - G2 - . | C2 - - - - - . C2 - . G2 - Eb2 - ~F2 -
+end
+
+# the bass line's second half (B, the rails)
+bass bassB
+Bb2 - - . Bb2 - . Db3 - - ~C3 - . F2 - . | F2 - - . F2 - . Ab2 - - ~G2 - . C3 - . | Ab2 - - . Ab2 - . Eb3 - - ~C3 - . Eb2 - . | C2 - - . C3 - . C2 - E2 - . G2 - ~Bb2 -
+end
+
+# held roots: the title and the countdown
+bass bassHold
+F2 - - - - - - - - - - - - - - - | Db2 - - - - - - - - - - - - - - - | Eb2 - - - - - - - - - - - - - - - | C2 - - - - - - - - - - - - - - -
+end
+
+bass bassF
+F2 - - - - - - - - - - - - - - -
+end
+
+# the results: half-time roots
+bass bassHalf
+F2 - - - - - . . F2 - - . C3 - . . | Db2 - - - - - . . Db2 - - . Ab2 - . . | Eb2 - - - - - . . Eb2 - - . Bb2 - . . | C2 - - - - - . . C2 - - . G2 - . .
+end
+
+# ---- the stabs ---------------------------------------------------------------
+stab stabA
+..x.....x.x..... | ..x.....x.....x. | ..x.....x.x..... | ..x...x...x.x...
+end
+
+stab stabDrop
+X.x.....x.x..... | ..x.....x.....x. | X.x.....x.x..... | ..x...x...x.xxx.
+end
+
+# ---- the arpeggio: 16ths over two octaves ---------------------------------------
+arp arpA
+0 2 4 5 7 9 7 5 4 2 4 5 7 5 4 2 | 0 2 4 5 7 9 7 5 4 2 4 5 7 5 4 2 | 0 2 4 5 7 9 7 5 4 2 4 5 7 5 4 2 | 0 2 4 5 7 9 8 7 5 4 3 2 1 2 3 4
+end
+
+arp arpSlow
+0 . 2 . 4 . 5 . 7 . 5 . 4 . 2 . | 0 . 2 . 4 . 5 . 7 . 9 . 7 . 5 . | 0 . 2 . 4 . 5 . 7 . 5 . 4 . 2 . | 0 . 2 . 4 . 5 . 7 . 8 . 7 . 4 .
+end
+
+# ---- the sections: one per music state --------------------------------------------
+
+# the title: the filtered intro (the mixer's low-pass at 500 Hz), 8 bars looping
+section intro bars 8 bass sub pad 1
+  drums brkA brkA brkA brkB brkA brkA brkA brkFill
+  bass  bassHold
+  harm  progA
+  fx    C.......
+end
+
+# the countdown: no break, the riser (by code), the held root
+section count bars 4 bass sub pad 0.8
+  drums -
+  bass  bassF
+  harm  hold
+  fx    ....
+end
+
+# A1, the warm-up: the break, the reese, the sub
+section warmup bars 8 bass both pad 0
+  drums brkA brkA brkA brkB brkA brkA brkB brkFill
+  bass  bassA
+  harm  progA
+  fx    C...C...
+end
+
+# A2, the kickers: + the stabs and the open hats
+section kickers bars 8 bass both pad 0
+  drums brkO brkO brkO brkO2 brkO brkO brkO2 brkFill
+  bass  bassA
+  stab  stabA
+  harm  progA
+  fx    C...C...
+end
+
+# B, the rails: + the arp, the bass line's second half
+section rails bars 8 bass both pad 0.35
+  drums brkA brkB brkA brkB brkO brkO2 brkO brkFill
+  bass  bassB
+  arp   arpA
+  harm  progB
+  fx    C...C...
+end
+
+# A3, the split: everything
+section split bars 8 bass both pad 0.3
+  drums brkR brkR brkR brkRFill brkR brkR brkR brkRFill
+  bass  bassA
+  stab  stabA
+  arp   arpA
+  harm  progA
+  fx    C...C...
+end
+
+# the mega-jump's in-run: the riser over 4 bars, the drums thinning; it
+# holds on its last two bars until the take-off
+section riser bars 4 bass both pad 0.5 loop 2
+  drums thin1 thin2 thin3 thin4
+  bass  bassF
+  harm  hold
+  fx    C...
+end
+
+# the air: everything low-passed but the sub (the mixer), the riser held
+section air bars 2 bass sub pad 0.8
+  drums airBeat
+  bass  bassF
+  harm  hold
+  fx    ..
+end
+
+# the drop: A3 at full on the landing
+section drop bars 8 bass both pad 0.3
+  drums brkR brkR brkR brkRFill brkR brkR brkR brkRFill
+  bass  bassA
+  stab  stabDrop
+  arp   arpA
+  harm  progA
+  fx    C...C...
+end
+
+# the finish: a one-bar stop (the impact by code)
+section finish bars 1 bass none pad 0.6
+  drums -
+  harm  hold
+  fx    .
+end
+
+# the results: the breakdown, the tally ticking on the 16ths
+section results bars 8 bass sub pad 1
+  drums half half half halfB half half half halfB
+  bass  bassHalf
+  arp   arpSlow
+  harm  progA
+  fx    C.......
+end
