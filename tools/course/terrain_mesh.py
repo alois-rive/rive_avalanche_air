@@ -56,7 +56,9 @@ def build(data):
             return "ice"
         if tri_normal_y(*pts) < ROCK_NY:
             return "rock"
-        if all(n in packed for n in nodes):
+        # packed snow where a feature builds or cuts at least 0.3 m (its
+        # run-out's tail is the piste again)
+        if all(n in packed and abs(g.ov_value.get(n, 0.0)) > 0.3 for n in nodes):
             return "packed"
         if data.in_piste(cx, cz):
             return "groomed"

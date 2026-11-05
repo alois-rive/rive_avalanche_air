@@ -6,8 +6,8 @@ type="PackedScene"
 [deps]
 
 source_file="dressing.rmdlcmd"
-source_hash="b0c7d977f0e0fb0c"
-dest_files=["build/cache/import/dressing.rmdlcmd-cc42ffd746c85e74.lods"]
+source_hash="4c7fc9121161a136"
+dest_files=["build/cache/import/dressing.rmdlcmd-8d9fa04d8df7f9b0.lods"]
 
 [params]
 

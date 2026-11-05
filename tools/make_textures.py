@@ -208,10 +208,10 @@ def snow_packed():
     for y in range(64):
         for x in range(64):
             n = pnoise(x, y, 4, 64, 31)
-            v = 1 if n > 0.6 else 2 if n > 0.4 else 3
+            v = 0 if n > 0.62 else 1 if n > 0.4 else 2
             # board tracks down the kicker
             if (x + y // 8) % 16 in (3, 4) or (x - y // 6) % 21 == 7:
-                v = min(5, v + 2)
+                v = min(4, v + 2)
             t.set(x, y, v)
     return t
 
@@ -635,8 +635,8 @@ def mountains():
             else:
                 v = 4 if slope > 0 else 3
             # the feet of the range fade into the haze (the fog's colour below)
-            if y > 50:
-                v = 5 if (y > 56 or (x + y) % 2) else v
+            if y > 52:
+                v = 5
             if y > 58:
                 v = 6
             t.set(x, y, v)

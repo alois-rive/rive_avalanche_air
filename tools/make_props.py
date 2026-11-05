@@ -255,6 +255,8 @@ class Dressing:
         self.data = data
         self.forest = forest
         self.ops = []          # (z, builder) to run into the region's bag
+        self.lanes = {}        # name: (builders, step, speed) of a lift's moving lane
+        self.moving = []       # (mesh name, step, seconds a step) for the Lifts timeline
 
     def ground(self, x, z):
         g = self.data.ground(x, z)
@@ -382,7 +384,7 @@ class Dressing:
         self.keep(c[0], c[2], radius + 4)
 
     # ---- the lifts -----------------------------------------------------------
-    def lift_line(self, a, b, n_pylons, n_chairs, clearance, bag_z_from=None):
+    def lift_line(self, a, b, n_pylons, n_chairs, clearance, name):
         """A chairlift from a to b (plan points), its cable `clearance` m above
         the highest ground under it: pylons, cable, chairs both ways."""
         ga = self.ground(a[0], a[2])
@@ -428,10 +430,16 @@ class Dressing:
                 q1 = tuple(pb[i] * t1 + pa[i] * (1 - t1) for i in range(3))
                 self.add(q0[2], lambda bag, q0=q0, q1=q1: cable(bag, q0, q1))
             per = n_chairs // 2
+            # the chairs of a lane are one mesh that the timeline `Lifts`
+            # moves one chair's spacing along the cable, looping: they run up
+            # on one side and down on the other
+            step = tuple((pb[i] - pa[i]) / per * lane for i in range(3))
+            fns = []
             for k in range(per):
                 t = (k + 0.5 * (lane + 1) / 2) / per
                 at = tuple(pa[i] + (pb[i] - pa[i]) * t for i in range(3))
-                self.add(at[2], lambda bag, at=at, yaw=yaw: chair(bag, at, yaw))
+                fns.append(lambda bag, at=at, yaw=yaw: chair(bag, at, yaw))
+            self.lanes["%s%s" % (name, "U" if lane > 0 else "D")] = (fns, step, 2.5)
         return ya, yb
 
     def lift1(self):
@@ -439,14 +447,14 @@ class Dressing:
         m = self.data.main_samples
         a, _d, _ = self.on_line(m, P["s1"], P["x"])
         b, _d, _ = self.on_line(m, P["s0"], P["x"])
-        self.lift_line(a, b, P["pylons"], P["chairs"], 8.0)
+        self.lift_line(a, b, P["pylons"], P["chairs"], 8.0, "L1")
 
     def lift2(self):
         P = C.LIFT2
         m = self.data.main_samples
         a, _d, _ = self.on_line(m, P["s1"], P["x1"])
         b, _d, _ = self.on_line(m, P["s0"], P["x0"])
-        self.lift_line(a, b, P["pylons"], P["chairs"], P["height"])
+        self.lift_line(a, b, P["pylons"], P["chairs"], P["height"], "L2")
 
     def gondola(self):
         d = self.data
@@ -495,10 +503,14 @@ class Dressing:
                 q0 = tuple(pa[i] + (pb[i] - pa[i]) * k / n for i in range(3))
                 q1 = tuple(pa[i] + (pb[i] - pa[i]) * (k + 1) / n for i in range(3))
                 self.add(q0[2], lambda bag, q0=q0, q1=q1: cable(bag, q0, q1))
-            for k in range(C.GONDOLA["cabins"] // 2):
-                t = (k + 0.5 + 0.25 * lane) / (C.GONDOLA["cabins"] // 2)
+            per = C.GONDOLA["cabins"] // 2
+            step = tuple((pb[i] - pa[i]) / per * lane for i in range(3))
+            fns = []
+            for k in range(per):
+                t = (k + 0.5 + 0.25 * lane) / per
                 at = tuple(pa[i] + (pb[i] - pa[i]) * t for i in range(3))
-                self.add(at[2], lambda bag, at=at, yaw=yaw: cabin(bag, at, yaw))
+                fns.append(lambda bag, at=at, yaw=yaw: cabin(bag, at, yaw))
+            self.lanes["G%s" % ("U" if lane > 0 else "D")] = (fns, step, 5.0)
 
     # ---- the features' meshes ---------------------------------------------------
     def feature_ops(self):
@@ -530,6 +542,17 @@ class Dressing:
                 mm = bags[ri].m[mat]
                 if mm.faces:
                     out.append(mm)
+        # the moving chairs and cabins: a mesh a lane (see lift_line)
+        self.moving = []
+        for name in sorted(self.lanes):
+            fns, step, speed = self.lanes[name]
+            bag = Bag(name + "_")
+            for fn in fns:
+                fn(bag)
+            length = math.sqrt(sum(v * v for v in step))
+            for mat in sorted(bag.m):
+                out.append(bag.m[mat])
+                self.moving.append((bag.m[mat].name, step, length / speed))
         self.ops = []
         return out
 

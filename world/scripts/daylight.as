@@ -19,7 +19,17 @@ export class Daylight extends NodeScript {
 
     _ready(): void {
         const sc = this.scene;
-        if (sc != null) this.anim = sc.animation("Daylight");
+        if (sc != null) {
+            this.anim = sc.animation("Daylight");
+            // the lifts' chairs and the gondola's cabins run for ever
+            const names = sc.animationNames();
+            for (let i = 0; i < names.length; i++) {
+                if (names[i].startsWith("Lift_")) {
+                    const a = sc.animation(names[i]);
+                    if (a != null) a.play();
+                }
+            }
+        }
         this.sky = this.node.getNode("Sky");
         this.lens = this.node.getNode("../Lens");
         this.show(game.rider.s);

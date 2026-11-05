@@ -596,10 +596,13 @@ class Grid:
                             neg[k] = min(neg.get(k, 0.0), v)
                         touched.add(k)
             self.ov_nodes[o.id] = touched
+        self.ov_value = {}
         for (r, c), v in pos.items():
             self.h[r][c - self.c0[r]] += v
+            self.ov_value[(r, c)] = v
         for (r, c), v in neg.items():
             self.h[r][c - self.c0[r]] += v
+            self.ov_value[(r, c)] = self.ov_value.get((r, c), 0.0) + v
         self.lake()
         # quantise to the centimetre, as course_data.as stores them
         self.row_y = []

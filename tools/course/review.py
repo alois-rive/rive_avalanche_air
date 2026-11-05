@@ -27,7 +27,7 @@ import course as C  # noqa: E402
 
 # the progress each view stands at (for the light)
 VIEW_S = {"Start": 2, "Warmup": 60, "Kickers": 470, "RailGarden": 650, "Split": 880, "LowLine": 1060,
-          "HighLine": 1040, "MegaInrun": 1300, "MegaSide": 1340, "Finish": 1420, "Overview": 0}
+          "HighLine": 1040, "HighDrop": 1145, "MegaLip": 1318, "MegaInrun": 1300, "MegaSide": 1340, "Finish": 1420, "Overview": 0}
 
 
 def frame_rig(cam_xform, anim):

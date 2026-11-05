@@ -150,6 +150,7 @@
   <sub_resource id="Mat_packed" type="ShaderMaterial">
     <property name="shader">ExtResource("1_surface")</property>
     <property name="shader_parameter/albedo_texture">ExtResource("tex_snow_packed")</property>
+    <property name="shader_parameter/overbright">1.1</property>
     <property name="shader_parameter/uv_scale">Vector2(0.33333, 0.33333)</property>
     <property name="shader_parameter/sun_direction">Vector3(-0.5064, 0.4695, -0.7233)</property>
     <property name="shader_parameter/sun_color">Color(0.778, 0.7027, 0.5271, 1)</property>
@@ -527,7 +528,7 @@
     <property name="shader_parameter/frames_y">1</property>
   </sub_resource>
   <sub_resource id="Mesh_flake" type="QuadMesh">
-    <property name="size">Vector2(0.22, 0.22)</property>
+    <property name="size">Vector2(0.5, 0.5)</property>
     <property name="material">SubResource("Mat_flake")</property>
   </sub_resource>
   <sub_resource id="Mat_confetti" type="ShaderMaterial">
@@ -537,7 +538,7 @@
     <property name="shader_parameter/frames_y">1</property>
   </sub_resource>
   <sub_resource id="Mesh_confetti" type="QuadMesh">
-    <property name="size">Vector2(0.3, 0.3)</property>
+    <property name="size">Vector2(0.9, 0.9)</property>
     <property name="material">SubResource("Mat_confetti")</property>
   </sub_resource>
   <sub_resource id="Ramp_confetti" type="Gradient">
@@ -851,10 +852,6 @@
     <property name="material_override">SubResource("Mat_groomed")</property>
     <property name="visibility_range_end">170</property>
   </node>
-  <node name="T20_packed" parent="Terrain">
-    <property name="material_override">SubResource("Mat_packed")</property>
-    <property name="visibility_range_end">170</property>
-  </node>
   <node name="T20_powder" parent="Terrain">
     <property name="material_override">SubResource("Mat_powder")</property>
     <property name="visibility_range_end">170</property>
@@ -905,10 +902,6 @@
   </node>
   <node name="T23_groomed" parent="Terrain">
     <property name="material_override">SubResource("Mat_groomed")</property>
-    <property name="visibility_range_end">170</property>
-  </node>
-  <node name="T23_packed" parent="Terrain">
-    <property name="material_override">SubResource("Mat_packed")</property>
     <property name="visibility_range_end">170</property>
   </node>
   <node name="T23_powder" parent="Terrain">
@@ -1577,6 +1570,24 @@
     <property name="material_override">SubResource("Mat_building")</property>
     <property name="visibility_range_end">170</property>
   </node>
+  <node name="GD_lift" parent="Dressing">
+    <property name="material_override">SubResource("Mat_lift")</property>
+  </node>
+  <node name="GU_lift" parent="Dressing">
+    <property name="material_override">SubResource("Mat_lift")</property>
+  </node>
+  <node name="L1D_lift" parent="Dressing">
+    <property name="material_override">SubResource("Mat_lift")</property>
+  </node>
+  <node name="L1U_lift" parent="Dressing">
+    <property name="material_override">SubResource("Mat_lift")</property>
+  </node>
+  <node name="L2D_lift" parent="Dressing">
+    <property name="material_override">SubResource("Mat_lift")</property>
+  </node>
+  <node name="L2U_lift" parent="Dressing">
+    <property name="material_override">SubResource("Mat_lift")</property>
+  </node>
   <!-- crossed-quad pines, a MultiMesh a chunk and variant -->
   <node name="Trees" type="Node3D" parent="."/>
   <node name="Pines_00_a" type="MultiMeshInstance3D" parent="Trees">
@@ -1921,6 +1932,18 @@
   </node>
   <node name="HighLine" type="Camera3D" parent="ReviewCams">
     <property name="transform">Transform3D(0.97, -0.0407, 0.2399, 0, 0.9859, 0.1674, -0.2433, -0.1624, 0.9563, -49.8352, -252.1474, -987.1065)</property>
+    <property name="fov">66</property>
+    <property name="near">0.1</property>
+    <property name="far">500</property>
+  </node>
+  <node name="HighDrop" type="Camera3D" parent="ReviewCams">
+    <property name="transform">Transform3D(0.8538, 0.187, -0.4858, 0, 0.9333, 0.3592, 0.5205, -0.3067, 0.7969, -42.2572, -285.1331, -1088.791)</property>
+    <property name="fov">66</property>
+    <property name="near">0.1</property>
+    <property name="far">500</property>
+  </node>
+  <node name="MegaLip" type="Camera3D" parent="ReviewCams">
+    <property name="transform">Transform3D(1, 0, 0, 0, 0.9504, 0.3111, 0, -0.3111, 0.9504, 0, -350.01, -1254.7809)</property>
     <property name="fov">66</property>
     <property name="near">0.1</property>
     <property name="far">500</property>
@@ -2870,7 +2893,7 @@
       </KeyedProperty>
     </KeyedObject>
   </LinearAnimation>
-  <LinearAnimation name="Confetti" fps="60" duration="2" loopValue="oneShot">
+  <LinearAnimation name="Confetti" fps="60" duration="90" loopValue="oneShot">
     <KeyedObject target="Fx/ConfettiL">
       <KeyedProperty property="emitting">
         <KeyFrameBool frame="0" value="false"/>
@@ -2881,6 +2904,102 @@
       <KeyedProperty property="emitting">
         <KeyFrameBool frame="0" value="false"/>
         <KeyFrameBool frame="1" value="true"/>
+      </KeyedProperty>
+    </KeyedObject>
+  </LinearAnimation>
+  <LinearAnimation name="Lift_GD_lift" fps="30" duration="482" loopValue="loop">
+    <KeyedObject target="Dressing/GD_lift">
+      <KeyedProperty property="position:x">
+        <KeyFrameDouble frame="0" value="0" interpolationType="linear"/>
+        <KeyFrameDouble frame="482" value="0.2138"/>
+      </KeyedProperty>
+      <KeyedProperty property="position:y">
+        <KeyFrameDouble frame="0" value="0" interpolationType="linear"/>
+        <KeyFrameDouble frame="482" value="-23.3428"/>
+      </KeyedProperty>
+      <KeyedProperty property="position:z">
+        <KeyFrameDouble frame="0" value="0" interpolationType="linear"/>
+        <KeyFrameDouble frame="482" value="-76.8223"/>
+      </KeyedProperty>
+    </KeyedObject>
+  </LinearAnimation>
+  <LinearAnimation name="Lift_GU_lift" fps="30" duration="482" loopValue="loop">
+    <KeyedObject target="Dressing/GU_lift">
+      <KeyedProperty property="position:x">
+        <KeyFrameDouble frame="0" value="0" interpolationType="linear"/>
+        <KeyFrameDouble frame="482" value="-0.2138"/>
+      </KeyedProperty>
+      <KeyedProperty property="position:y">
+        <KeyFrameDouble frame="0" value="0" interpolationType="linear"/>
+        <KeyFrameDouble frame="482" value="23.3428"/>
+      </KeyedProperty>
+      <KeyedProperty property="position:z">
+        <KeyFrameDouble frame="0" value="0" interpolationType="linear"/>
+        <KeyFrameDouble frame="482" value="76.8223"/>
+      </KeyedProperty>
+    </KeyedObject>
+  </LinearAnimation>
+  <LinearAnimation name="Lift_L1D_lift" fps="30" duration="360" loopValue="loop">
+    <KeyedObject target="Dressing/L1D_lift">
+      <KeyedProperty property="position:x">
+        <KeyFrameDouble frame="0" value="0" interpolationType="linear"/>
+        <KeyFrameDouble frame="360" value="0"/>
+      </KeyedProperty>
+      <KeyedProperty property="position:y">
+        <KeyFrameDouble frame="0" value="0" interpolationType="linear"/>
+        <KeyFrameDouble frame="360" value="-8.2012"/>
+      </KeyedProperty>
+      <KeyedProperty property="position:z">
+        <KeyFrameDouble frame="0" value="0" interpolationType="linear"/>
+        <KeyFrameDouble frame="360" value="-28.8248"/>
+      </KeyedProperty>
+    </KeyedObject>
+  </LinearAnimation>
+  <LinearAnimation name="Lift_L1U_lift" fps="30" duration="360" loopValue="loop">
+    <KeyedObject target="Dressing/L1U_lift">
+      <KeyedProperty property="position:x">
+        <KeyFrameDouble frame="0" value="0" interpolationType="linear"/>
+        <KeyFrameDouble frame="360" value="0"/>
+      </KeyedProperty>
+      <KeyedProperty property="position:y">
+        <KeyFrameDouble frame="0" value="0" interpolationType="linear"/>
+        <KeyFrameDouble frame="360" value="8.2012"/>
+      </KeyedProperty>
+      <KeyedProperty property="position:z">
+        <KeyFrameDouble frame="0" value="0" interpolationType="linear"/>
+        <KeyFrameDouble frame="360" value="28.8248"/>
+      </KeyedProperty>
+    </KeyedObject>
+  </LinearAnimation>
+  <LinearAnimation name="Lift_L2D_lift" fps="30" duration="298" loopValue="loop">
+    <KeyedObject target="Dressing/L2D_lift">
+      <KeyedProperty property="position:x">
+        <KeyFrameDouble frame="0" value="0" interpolationType="linear"/>
+        <KeyFrameDouble frame="298" value="17.5298"/>
+      </KeyedProperty>
+      <KeyedProperty property="position:y">
+        <KeyFrameDouble frame="0" value="0" interpolationType="linear"/>
+        <KeyFrameDouble frame="298" value="-3.3235"/>
+      </KeyedProperty>
+      <KeyedProperty property="position:z">
+        <KeyFrameDouble frame="0" value="0" interpolationType="linear"/>
+        <KeyFrameDouble frame="298" value="-17.2298"/>
+      </KeyedProperty>
+    </KeyedObject>
+  </LinearAnimation>
+  <LinearAnimation name="Lift_L2U_lift" fps="30" duration="298" loopValue="loop">
+    <KeyedObject target="Dressing/L2U_lift">
+      <KeyedProperty property="position:x">
+        <KeyFrameDouble frame="0" value="0" interpolationType="linear"/>
+        <KeyFrameDouble frame="298" value="-17.5298"/>
+      </KeyedProperty>
+      <KeyedProperty property="position:y">
+        <KeyFrameDouble frame="0" value="0" interpolationType="linear"/>
+        <KeyFrameDouble frame="298" value="3.3235"/>
+      </KeyedProperty>
+      <KeyedProperty property="position:z">
+        <KeyFrameDouble frame="0" value="0" interpolationType="linear"/>
+        <KeyFrameDouble frame="298" value="17.2298"/>
       </KeyedProperty>
     </KeyedObject>
   </LinearAnimation>
