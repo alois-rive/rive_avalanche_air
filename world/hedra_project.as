@@ -4,6 +4,8 @@
 import { NodeScript, ScriptRegistry, Value } from "hedra_engine/script";
 import { registerProject } from "hedra_engine/scene";
 import { ChaseCamera } from "./scripts/camera";
+import { Daylight } from "./scripts/daylight";
+import { CourseFx } from "./scripts/fx_course";
 import { Run } from "./scripts/run";
 import { Sound } from "./scripts/sound";
 
@@ -16,10 +18,43 @@ function set0(_s: NodeScript, _name: string, _v: Value): bool {
 }
 
 function make1(): NodeScript {
-    return new Run();
+    return new Daylight();
 }
 
 function set1(s: NodeScript, name: string, v: Value): bool {
+    const t = s as Daylight;
+    if (name == "shown") {
+        if (!v.isNumber()) return false;
+        t.shown = v.asF32();
+        return true;
+    }
+    return false;
+}
+
+function make2(): NodeScript {
+    return new CourseFx();
+}
+
+function set2(s: NodeScript, name: string, v: Value): bool {
+    const t = s as CourseFx;
+    if (name == "cursor") {
+        if (!v.isNumber()) return false;
+        t.cursor = v.asI32();
+        return true;
+    }
+    if (name == "lastS") {
+        if (!v.isNumber()) return false;
+        t.lastS = v.asF32();
+        return true;
+    }
+    return false;
+}
+
+function make3(): NodeScript {
+    return new Run();
+}
+
+function set3(s: NodeScript, name: string, v: Value): bool {
     const t = s as Run;
     if (name == "printEvery") {
         if (!v.isNumber()) return false;
@@ -34,18 +69,20 @@ function set1(s: NodeScript, name: string, v: Value): bool {
     return false;
 }
 
-function make2(): NodeScript {
+function make4(): NodeScript {
     return new Sound();
 }
 
-function set2(_s: NodeScript, _name: string, _v: Value): bool {
+function set4(_s: NodeScript, _name: string, _v: Value): bool {
     return false;
 }
 
 function registerScripts(r: ScriptRegistry): void {
     r.add("scripts/camera.as", "ChaseCamera", make0, set0);
-    r.add("scripts/run.as", "Run", make1, set1);
-    r.add("scripts/sound.as", "Sound", make2, set2);
+    r.add("scripts/daylight.as", "Daylight", make1, set1);
+    r.add("scripts/fx_course.as", "CourseFx", make2, set2);
+    r.add("scripts/run.as", "Run", make3, set3);
+    r.add("scripts/sound.as", "Sound", make4, set4);
 }
 
 registerProject("world", "run.rscn", 0, registerScripts, ["avalanche.rml"],
