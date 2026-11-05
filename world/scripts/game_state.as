@@ -90,6 +90,8 @@ export const EV_LINE: i32 = 23;        // a: 1 the high line, 0 the low line, as
 export const EV_MEGA_TAKEOFF: i32 = 24;
 export const EV_START: i32 = 25;       // the title's Start
 export const EV_TRICK: i32 = 26;       // a trick completed inside a combo (game.trick holds it)
+// (appended by the gameplay)
+export const EV_RESPAWN: i32 = 27;     // the rider stands again after a crash (a: s), control 0.1 s later
 
 export const EVENT_RING: i32 = 256;
 
