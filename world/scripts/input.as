@@ -145,10 +145,11 @@ export class Controls {
                 this.deletePressed = true;
                 used = true;
             }
-            if (key == KEY_UP || key == KEY_W) this.upPressed = true;
-            if (key == KEY_DOWN || key == KEY_S) this.downPressed = true;
-            if (key == KEY_LEFT || key == KEY_A) this.leftPressed = true;
-            if (key == KEY_RIGHT || key == KEY_D) this.rightPressed = true;
+            // (the menus' moves are the arrows: W A S D are letters there)
+            if (key == KEY_UP) this.upPressed = true;
+            if (key == KEY_DOWN) this.downPressed = true;
+            if (key == KEY_LEFT) this.leftPressed = true;
+            if (key == KEY_RIGHT) this.rightPressed = true;
             if ((key >= KEY_A && key <= KEY_Z) || (key >= KEY_0 && key <= KEY_9)) this.typed = key;
         }
         const bit = this.bit(key);

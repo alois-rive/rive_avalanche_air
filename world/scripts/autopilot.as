@@ -172,8 +172,12 @@ export class Autopilot {
             if (this.lastMode != MODE_AIR) this.takeoff(r);
             this.air(r, out);
         } else if (mode == MODE_GRIND) {
-            // the balance against its drift
-            out.x = clampf(1.6 * r.grind.balance, -1, 1);
+            // the balance against its drift; the crouch held (its release is
+            // an ollie off) until the last metre, popping off the end
+            const g = r.grind;
+            out.x = clampf(1.6 * g.balance, -1, 1);
+            const left = (g.dir > 0 ? <f32>(g.count - 1) - g.u : g.u) * 0.25;
+            out.crouch = left > 0.9;
             this.planned = false;
         } else if (mode == MODE_GROUND) {
             this.ground(r, out, dt);
@@ -277,8 +281,10 @@ export class Autopilot {
         this.planned = true;
         if (i < 0 || T < 0.45) return;
         const want = <f32>this.fspin[i];
+        const k: f32 = T > 0.55 && this.fgrab[i] != GRAB_NONE ? 0.85 : 1;
         if (want != 0) {
-            const reach = SPIN_RATE * (T - 0.28) + SPIN_COAST;
+            // what fits, with a margin: the solved flight is a forecast
+            const reach = SPIN_RATE * k * (T - 0.45) + SPIN_COAST * k;
             let halves = Mathf.floor(reach / 180);
             const wantHalves = Mathf.abs(want) / 180;
             if (halves > wantHalves) halves = wantHalves;
@@ -286,7 +292,7 @@ export class Autopilot {
         }
         const flip = <f32>this.fflip[i];
         if (flip != 0) {
-            const reach = FLIP_RATE * (T - 0.3) + FLIP_COAST;
+            const reach = FLIP_RATE * k * (T - 0.45) + FLIP_COAST * k;
             if (reach >= 360) this.flipTarget = flip > 0 ? 360 : -360;
         }
         if (T > 0.55) this.grab = this.fgrab[i];
@@ -294,10 +300,15 @@ export class Autopilot {
 
     private air(r: Rider, out: Input): void {
         if (!this.planned) return;
+        // released when what the rate still turns, ramping down, reaches the target
         const spin = this.spinTarget;
-        if (spin != 0 && Mathf.abs(spin) - Mathf.abs(r.spinDeg) > SPIN_COAST) out.x = spin > 0 ? -1 : 1;
+        const sr = r.spinRate;
+        const spinCoast = sr * sr / (2 * SPIN_RATE / 0.15) + 2;
+        if (spin != 0 && Mathf.abs(spin) - Mathf.abs(r.spinDeg) > spinCoast) out.x = spin > 0 ? -1 : 1;
         const flip = this.flipTarget;
-        if (flip != 0 && Mathf.abs(flip) - Mathf.abs(r.flipDeg) > FLIP_COAST && !r.yLatched) out.y = flip > 0 ? 1 : -1;
+        const fr = r.flipRate;
+        const flipCoast = fr * fr / (2 * FLIP_RATE / 0.15) + 2;
+        if (flip != 0 && Mathf.abs(flip) - Mathf.abs(r.flipDeg) > flipCoast && !r.yLatched) out.y = flip > 0 ? 1 : -1;
         if (flip != 0 && r.yLatched) out.y = 0;
         if (this.grab != GRAB_NONE && r.airTime > 0.08 && r.landT > 0.25) {
             if (this.grab == GRAB_INDY) out.grabs = GRAB_BIT_INDY;

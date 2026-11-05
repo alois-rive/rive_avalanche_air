@@ -60,6 +60,9 @@ export class Grind {
     ty: f32 = 0;
     tz: f32 = -1;
     assist: bool = false;
+    // the rail just left is not caught again for a moment (its end, an ollie off it)
+    ignored: i32 = -1;
+    ignoreTime: f32 = 0;
     rng: Pcg32 = new Pcg32(1, 3);
     private near: StaticArray<i32> = new StaticArray<i32>(8);
     private a: LinePoint = new LinePoint();
@@ -67,6 +70,19 @@ export class Grind {
 
     seed(seed: u64): void {
         this.rng.seed(seed, 3);
+        this.ignored = -1;
+        this.ignoreTime = 0;
+    }
+
+    // Off the rail: none caught for 0.15 s, this one for 0.45 s.
+    left(): void {
+        this.ignored = this.rail;
+        this.ignoreTime = 0.15;
+    }
+
+    // Each tick, on a rail or not.
+    age(dt: f32): void {
+        if (this.ignoreTime > -1) this.ignoreTime -= dt;
     }
 
     // The game's kind (game_state GRIND_*).
@@ -83,12 +99,14 @@ export class Grind {
     tryCatch(px: f32, py: f32, pz: f32, vx: f32, vy: f32, vz: f32, onSnow: bool, crouched: bool, boardYaw: f32): bool {
         if (railCount() <= 0) return false;
         if (onSnow && !crouched) return false;
+        if (this.ignoreTime > 0) return false;
         if (!onSnow && vy > CLIMB_MAX) return false;
         const vh = Mathf.sqrt(vx * vx + vz * vz);
         if (vh < 1) return false;
         const n = railsNear(px, pz, 1.5, this.near);
         for (let k = 0; k < n; k++) {
             const r = this.near[k];
+            if (r == this.ignored && this.ignoreTime > -0.3) continue;
             const kind = railKind(r);
             const reach = kind == RAIL_RAIL ? REACH_RAIL : REACH_WIDE;
             const count = railPointCount(r);

@@ -26,7 +26,7 @@ import {
 } from "./course_api";
 import {
     EV_BAIL, EV_CRASH, EV_GATE, EV_GRAB, EV_GRIND_END, EV_GRIND_START, EV_LAND, EV_LINE, EV_MEGA_TAKEOFF, EV_OLLIE,
-    EV_SECTION, EV_SPIN_HALF, GRAB_INDY, GRAB_MELON, GRAB_METHOD, GRAB_MUTE, GRAB_NONE, GRIND_NONE, LAND_CLEAN,
+    EV_RESPAWN, EV_SECTION, EV_SPIN_HALF, GRAB_INDY, GRAB_MELON, GRAB_METHOD, GRAB_MUTE, GRAB_NONE, GRIND_NONE, LAND_CLEAN,
     LAND_PERFECT, LAND_SKETCHY, SURF_ICE, SURF_POWDER, SURF_ROCK, game,
 } from "./game_state";
 import { END_POP, GRIND_BAIL, GRIND_END, GRIND_ON, GRIND_STOPPED, Grind, OLLIE_OFF } from "./grind";
@@ -339,6 +339,7 @@ export class Rider {
     // ---- the tick -------------------------------------------------------------
 
     tick(inp: Input, dt: f32): void {
+        this.grind.age(dt);
         if (this.cooldown > 0) this.cooldown -= dt;
         if (this.wobble > 0) this.wobble -= dt;
         if (this.absorb > 0) this.absorb -= dt;
@@ -917,7 +918,7 @@ export class Rider {
         const tilt = angleBetween(this.q.rx, this.q.ry, this.q.rz, nx, ny, nz);
         const quality = judgeLanding(yawErr, tilt, impact);
         this.lastLand = quality;
-        game.events.push(EV_LAND, impact, <f32>(quality < LAND_CRASH ? quality : LAND_SKETCHY));
+        if (quality != LAND_CRASH) game.events.push(EV_LAND, impact, <f32>quality);
         if (quality == LAND_CRASH) {
             this.crash(false);
             return;
@@ -1027,6 +1028,7 @@ export class Rider {
     }
 
     private leaveRail(pop: f32, x: f32): void {
+        this.grind.left();
         this.tricks.leaveRail();
         game.events.push(EV_GRIND_END, <f32>this.grind.gameKind(), 0);
         this.vy += pop;
@@ -1045,6 +1047,7 @@ export class Rider {
     // The balance lost: off the side it fell to, a stumble on the snow.
     private bail(): void {
         const g = this.grind;
+        g.left();
         this.tricks.lose(true, false);
         game.events.push(EV_BAIL, g.balance, 0);
         game.events.push(EV_GRIND_END, <f32>g.gameKind(), 1);
@@ -1167,6 +1170,7 @@ export class Rider {
         this.crashTime = keep;
         this.respawned = true;
         this.blink = CONTROL_AT + BLINK_TIME - keep;
+        game.events.push(EV_RESPAWN, this.s, 0);
     }
 
     // Whether the respawn's blink is on (its 1-bit transparency).

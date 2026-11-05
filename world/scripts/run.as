@@ -64,7 +64,7 @@ const RESTART_DEBOUNCE: i32 = 12;     // frames a key restart ignores the view m
 const LETTERS: i32 = 38;              // 0 space, 1..26 A..Z, 27..36 0..9, 37 "!"
 
 export class Run extends NodeScript {
-    printEvery: i32 = 30;
+    printEvery: i32 = 0;
 
     private began: bool = false;
     private frame: i32 = 0;
@@ -427,6 +427,7 @@ export class Run extends NodeScript {
             }
         }
         r.publish();
+        game.rider.finished = p == PHASE_FINISH || p == PHASE_RESULTS || p == PHASE_INITIALS;
         this.drawn.set(r.x, r.y, r.z, r.q.x, r.q.y, r.q.z, r.q.w);
         if (this.restartFrame >= 0 && p == PHASE_RIDING && r.hasControl()) {
             this.lastRestartFrames = this.frame - this.restartFrame;
